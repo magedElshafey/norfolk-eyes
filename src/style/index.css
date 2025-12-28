@@ -1,0 +1,625 @@
+/* imports */
+@import "./font.css";
+@import "./layout.css";
+@import "./text.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========= Base styles ========= */
+@layer base {
+    * {
+        @apply m-0 p-0 box-border;
+    }
+
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold;
+    }
+
+    /* line-height مربوط بالـ accessibility tool */
+    p {
+        line-height: calc(1.5 * var(--a11y-line-height-scale));
+    }
+
+    button {
+        @apply capitalize;
+    }
+
+    :root {
+        --toc-offset: 96px;
+        /* ========== Accessibility scales ========== */
+        --a11y-scale: 1;
+        --a11y-font-scale: 1;
+        --a11y-line-height-scale: 1;
+        --a11y-letter-spacing: 0;
+
+        /* ========== BRAND PALETTE – PALETTE 1 (DEFAULT) ========== */
+        --primary-green: #3f6a54;
+        --primary-dark-green: #325343;
+        --soft-gray: #f5f7f5;
+        --warm-cream: #fffcf6;
+        --soft-yellow: #f6df6b;
+        --soft-yellow-light: #faeea3;
+
+        /* ========== CORE SEMANTIC TOKENS (القلب الحقيقي للتصميم) ========== */
+        /* Backgrounds */
+        --bg-page: #f9fafb;
+        --bg-surface: #ffffff;
+        --bg-subtle: #f6f4ef;
+        /* sections */
+        --bg-hero: #fdf9f2;
+
+        /* Borders */
+        --border-subtle: #e5e7eb;
+        --border-strong: #9ca3af;
+
+        /* Text */
+        --text-main: #111827;
+        --text-muted: #4b5563;
+        --text-soft: #6b7280;
+
+        /* Accent / focus */
+        --accent: var(--primary-green);
+        --accent-soft: var(--soft-yellow);
+        --accent-soft-bg: #e6f3ec;
+        --focus-ring: #0f766e;
+
+        /* Overlay */
+        --overlay-backdrop: rgba(0, 0, 0, 0.5);
+
+        /* ========== Buttons ========== */
+        --btn-main-bg: #ffffff;
+        --btn-main-text: var(--primary-dark-green);
+        --btn-main-border: var(--primary-green);
+
+        --btn-secondary-bg: var(--primary-green);
+        --btn-secondary-text: #ffffff;
+        --btn-secondary-border: var(--primary-green);
+
+        --btn-outline-bg: #ffffff;
+        --btn-outline-text: #374151;
+        --btn-outline-border: #d1d5db;
+
+        --btn-danger-bg: #b91c1c;
+        --btn-danger-text: #ffffff;
+        --btn-danger-border: #b91c1c;
+
+        /* ========== Form fields ========== */
+        --field-bg: #f9fafb;
+        --field-border: #e5e7eb;
+        --field-text: #111827;
+        --field-placeholder: #9ca3af;
+        --field-label: #374151;
+
+        --field-focus-border: #16a34a;
+        --field-focus-ring: #16a34a;
+
+        --field-icon: #6b7280;
+
+        --field-error-border: #dc2626;
+        --field-error-ring: #dc2626;
+        --field-error-text: #b91c1c;
+
+        --field-bg-disabled: #f3f4f6;
+
+        /* ========== Layout: topbar / footer / mobile-nav ========== */
+        --topbar-bg: var(--primary-dark-green);
+        --topbar-text: #ffffff;
+        --topbar-accent: var(--soft-yellow);
+
+        --footer-bg: var(--primary-dark-green);
+        --footer-text: #ffffff;
+        --footer-muted: rgba(255, 255, 255, 0.7);
+        --footer-border: rgba(255, 255, 255, 0.08);
+        --footer-icon-bg: rgba(255, 255, 255, 0.08);
+
+        --mobile-nav-bg: var(--primary-dark-green);
+        --mobile-nav-text: #ffffff;
+        --mobile-nav-border: transparent;
+
+        /* ========== Sections / typography tokens ========== */
+        --section-title-color: var(--primary-green);
+        --section-body-color: #374151;
+        --section-muted-color: #6b7280;
+
+        --section-chip-bg: #e6f3ec;
+        --section-chip-text: var(--primary-green);
+        --section-chip-dot: var(--primary-green);
+        --section-bullet-color: var(--primary-green);
+
+        /* Vision / hero */
+        --vision-bg: #f5f7f5;
+        --vision-panel-bg: #ffffff;
+        --vision-panel-border: #e5e7eb;
+        --vision-text-main: var(--text-main);
+        --vision-text-muted: var(--text-muted);
+        --vision-chip-bg: #f3f4f6;
+        --vision-chip-text: #111827;
+        --vision-chip-active-bg: var(--primary-green);
+        --vision-chip-active-text: #ffffff;
+
+        --hero-bg: var(--bg-hero);
+        --hero-text-main: #143423;
+        --hero-text-muted: #4b5563;
+
+        /* Cards عامة */
+        --card-bg: var(--bg-surface);
+        --card-border: var(--border-subtle);
+
+        /* Fonts */
+        --font-en: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            sans-serif;
+        --font-ar: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            sans-serif;
+    }
+
+    /* ========== PALETTE 2 (DEEP CLINICAL TEAL) ========== */
+    /* ========== PALETTE 2 (CLINICAL NAVY) ========== */
+    :root[data-theme="palette-2"] {
+        /* أساس البراند – Navy طبي */
+        --primary-green: #064198;
+        /* الأزرق الأساسي */
+        --primary-dark-green: #01195a;
+        /* أزرق أغمق للهيدر والفوتر */
+        --soft-gray: #f3f3f3;
+        /* خلفية خفيفة */
+        --warm-cream: #ffffff;
+        /* أسطح بيضاء نضيفة */
+        --soft-yellow: #facc15;
+        /* Accent ذهبي بسيط */
+        --soft-yellow-light: #fef3c7;
+
+        /* الخلفيات العامة */
+        --bg-page: #f3f3f3;
+        /* خلفية عامة فاتحة */
+        --bg-surface: #ffffff;
+        /* كروت / بانلز */
+        --bg-subtle: #e7ebf5;
+        /* شرائط خفيفة / sections */
+        --bg-hero: #edf2ff;
+        /* هيرو فاتح ميال للأزرق */
+
+        /* البوردر */
+        --border-subtle: #d4d7e4;
+        --border-strong: #4b5563;
+
+        /* التيكست */
+        --text-main: #000000;
+        --text-muted: #1f2937;
+        --text-soft: #6b7280;
+
+        /* Accent / focus */
+        --accent: #064198;
+        /* الأزرق الأساسي للّينكات والأزرار */
+        --accent-soft: #facc15;
+        --accent-soft-bg: #fef9c3;
+        --focus-ring: #facc15;
+
+        /* Sections / Typography */
+        --section-title-color: #01195a;
+        --section-body-color: #111827;
+        --section-muted-color: #4b5563;
+
+        --section-chip-bg: #e5edff;
+        --section-chip-text: #01195a;
+        --section-chip-dot: #facc15;
+        --section-bullet-color: #064198;
+
+        /* Vision */
+        --vision-bg: #edf2ff;
+        --vision-panel-bg: #ffffff;
+        --vision-panel-border: #d4d7e4;
+        --vision-text-main: var(--text-main);
+        --vision-text-muted: #4b5563;
+        --vision-chip-bg: #eef2ff;
+        --vision-chip-text: #01195a;
+        --vision-chip-active-bg: #064198;
+        --vision-chip-active-text: #ffffff;
+
+        /* Hero */
+        --hero-bg: var(--bg-hero);
+        --hero-text-main: #01195a;
+        --hero-text-muted: #1f2937;
+
+        /* Cards عامة */
+        --card-bg: var(--bg-surface);
+        --card-border: #d4d7e4;
+
+        /* Layout: topbar / footer / mobile-nav */
+        --topbar-bg: #01195a;
+        --topbar-text: #f9fafb;
+        --topbar-accent: #facc15;
+
+        --footer-bg: #01195a;
+        --footer-text: #f9fafb;
+        --footer-muted: rgba(226, 232, 240, 0.85);
+        --footer-border: rgba(15, 23, 42, 0.3);
+        --footer-icon-bg: rgba(15, 23, 42, 0.6);
+
+        --mobile-nav-bg: #01195a;
+        --mobile-nav-text: #f9fafb;
+        --mobile-nav-border: transparent;
+    }
+
+    /* ========== PALETTE 3 (NAVY + GOLD / PREMIUM) ========== */
+    /* ========== PALETTE 3 (NAVY + JADE PREMIUM) ========== */
+    /* ========== PALETTE 3 (PEDIATRIC VISION) ========== */
+    /* ========== PALETTE 3 (CALM TEAL & CORAL) ========== */
+    :root[data-theme="palette-3"] {
+        /* أساس البراند */
+        --primary-green: #0f766e;
+        /* Teal أساسي */
+        --primary-dark-green: #064e3b;
+        /* Teal أغمق للهيدر والفوتر */
+        --soft-gray: #f1f5f9;
+        --warm-cream: #fff7ed;
+        /* خلفية دافية خفيفة */
+        --soft-yellow: #fb923c;
+        /* برتقالي/كورال */
+        --soft-yellow-light: #fed7aa;
+
+        /* خلفيات عامة */
+        --bg-page: #fef2f2;
+        /* روز فاتح */
+        --bg-surface: #ffffff;
+        --bg-subtle: #ffe4e6;
+        /* بانلز خفيفة */
+        --bg-hero: #ecfdf3;
+        /* Minty hero */
+
+        /* البوردر */
+        --border-subtle: #e5e7eb;
+        --border-strong: #4b5563;
+
+        /* التيكست */
+        --text-main: #111827;
+        --text-muted: #374151;
+        --text-soft: #6b7280;
+
+        /* Accent / focus */
+        --accent: #0f766e;
+        /* Teal للينكات والأزرار */
+        --accent-soft: #fb7185;
+        /* Coral ناعم */
+        --accent-soft-bg: #ffe4e6;
+        --focus-ring: #0f766e;
+
+        /* Sections / Typography */
+        --section-title-color: #111827;
+        --section-body-color: #111827;
+        --section-muted-color: #4b5563;
+
+        --section-chip-bg: #ecfdf3;
+        --section-chip-text: #064e3b;
+        --section-chip-dot: #0f766e;
+        --section-bullet-color: #fb7185;
+
+        /* Hero */
+        --hero-bg: var(--bg-hero);
+        --hero-text-main: #064e3b;
+        --hero-text-muted: #374151;
+
+        /* Vision */
+        --vision-bg: #fef2f2;
+        --vision-panel-bg: #ffffff;
+        --vision-panel-border: #fecaca;
+        --vision-text-main: #111827;
+        --vision-text-muted: #4b5563;
+        --vision-chip-bg: #ecfdf3;
+        --vision-chip-text: #064e3b;
+        --vision-chip-active-bg: #0f766e;
+        --vision-chip-active-text: #f9fafb;
+
+        /* Cards عامة */
+        --card-bg: #ffffff;
+        --card-border: #fecaca;
+
+        /* Layout: topbar / footer / mobile-nav */
+        --topbar-bg: #064e3b;
+        --topbar-text: #f9fafb;
+        --topbar-accent: #fb923c;
+
+        --footer-bg: #022c22;
+        --footer-text: #e5e7eb;
+        --footer-muted: #cbd5e1;
+        --footer-border: rgba(15, 118, 110, 0.4);
+        --footer-icon-bg: rgba(15, 23, 42, 0.6);
+
+        --mobile-nav-bg: #064e3b;
+        --mobile-nav-text: #f9fafb;
+        --mobile-nav-border: rgba(148, 163, 184, 0.6);
+    }
+}
+
+/* ========= Global html/body ========= */
+
+html {
+    scroll-behavior: smooth;
+
+    font-size: calc(16px * var(--a11y-font-scale));
+    line-height: calc(1.5 * var(--a11y-line-height-scale));
+    letter-spacing: calc(var(--a11y-letter-spacing) * 0.01em);
+}
+
+html[lang="en"] body {
+    font-family: var(--font-en);
+    direction: ltr;
+}
+
+html[lang="ar"] body {
+    font-family: var(--font-ar);
+    direction: rtl;
+}
+
+/* ========= Accessibility modes ========= */
+
+/* Invert colors */
+html.a11y-invert {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Monochrome */
+html.a11y-monochrome {
+    filter: grayscale(1);
+}
+
+/* High dark contrast – يغطّي كل الباليتس */
+html.a11y-dark-contrast body {
+    background-color: #111827;
+    color: #f9fafb;
+
+    --bg-page: #111827;
+    --bg-surface: #020617;
+    --bg-subtle: #020617;
+    --bg-hero: #020617;
+    --card-bg: #020617;
+    --border-subtle: #4b5563;
+    --border-strong: #e5e7eb;
+
+    --text-main: #f9fafb;
+    --text-muted: #dddd;
+    --text-soft: #cbd5e1;
+
+    --accent: #facc15;
+    --accent-soft: #facc15;
+    --accent-soft-bg: #3f3f1f;
+    --focus-ring: #facc15;
+
+    --overlay-backdrop: rgba(15, 23, 42, 0.75);
+
+    /* buttons */
+    --btn-main-bg: transparent;
+    --btn-main-text: #f9fafb;
+    --btn-main-border: #f9fafb;
+
+    --btn-secondary-bg: #f9fafb;
+    --btn-secondary-text: #0f172a;
+    --btn-secondary-border: #f9fafb;
+
+    --btn-outline-bg: transparent;
+    --btn-outline-text: #f9fafb;
+    --btn-outline-border: #f9fafb;
+
+    --btn-danger-bg: #b91c1c;
+    --btn-danger-text: #f9fafb;
+    --btn-danger-border: #fecaca;
+
+    /* fields */
+    --field-bg: #020617;
+    --field-border: #475569;
+    --field-text: #f9fafb;
+    --field-placeholder: #94a3b8;
+    --field-label: #e5e7eb;
+
+    --field-focus-border: #facc15;
+    --field-focus-ring: #facc15;
+
+    --field-icon: #e5e7eb;
+
+    --field-error-border: #f97373;
+    --field-error-ring: #f97373;
+    --field-error-text: #fecaca;
+
+    --field-bg-disabled: #111827;
+
+    /* footer/topbar/nav */
+    --footer-bg: #0f172a;
+    --footer-text: #f1f5f9;
+    --footer-muted: #cbd5e1;
+    --footer-border: rgba(241, 245, 249, 0.15);
+    --footer-icon-bg: rgba(30, 41, 59, 0.6);
+
+    --topbar-bg: #020617;
+    --topbar-text: #e5e7eb;
+    --topbar-accent: #facc15;
+
+    --mobile-nav-bg: #020617;
+    --mobile-nav-text: #f9fafb;
+    --mobile-nav-border: rgba(148, 163, 184, 0.6);
+}
+
+/* High light contrast – يغطّي كل الباليتس */
+html.a11y-light-contrast body {
+    background-color: #ffffff;
+    color: #000000;
+
+    --bg-page: #ffffff;
+    --bg-surface: #ffffff;
+    --bg-subtle: #ffffff;
+    --bg-hero: #ffffff;
+
+    --border-subtle: #000000;
+    --border-strong: #000000;
+
+    --text-main: #000000;
+    --text-muted: #111827;
+    --text-soft: #4b5563;
+
+    --accent: #000000;
+    --accent-soft: #f6df6b;
+    --accent-soft-bg: #fefce8;
+    --focus-ring: #111827;
+
+    --overlay-backdrop: rgba(0, 0, 0, 0.65);
+
+    /* buttons */
+    --btn-main-bg: #ffffff;
+    --btn-main-text: #000000;
+    --btn-main-border: #000000;
+
+    --btn-secondary-bg: #000000;
+    --btn-secondary-text: #ffffff;
+    --btn-secondary-border: #000000;
+
+    --btn-outline-bg: #ffffff;
+    --btn-outline-text: #000000;
+    --btn-outline-border: #000000;
+
+    --btn-danger-bg: #b91c1c;
+    --btn-danger-text: #ffffff;
+    --btn-danger-border: #b91c1c;
+
+    /* fields */
+    --field-bg: #ffffff;
+    --field-border: #000000;
+    --field-text: #000000;
+    --field-placeholder: #4b5563;
+    --field-label: #000000;
+
+    --field-focus-border: #000000;
+    --field-focus-ring: #000000;
+
+    --field-icon: #000000;
+
+    --field-error-border: #b91c1c;
+    --field-error-ring: #b91c1c;
+    --field-error-text: #b91c1c;
+
+    --field-bg-disabled: #e5e7eb;
+
+
+    /* footer/topbar/nav */
+    --footer-bg: #ffffff;
+    --footer-text: #000000;
+    --footer-muted: #374151;
+    --footer-border: #e5e7eb;
+    --footer-icon-bg: #f3f4f6;
+
+    --topbar-bg: #ffffff;
+    --topbar-text: #111827;
+    --topbar-accent: #f59e0b;
+
+    --mobile-nav-bg: #ffffff;
+    --mobile-nav-text: #000000;
+    --mobile-nav-border: #000000;
+}
+
+/* ========= Highlight modes (تشتغل في أي باليت / أي كونتراست) ========= */
+
+html.a11y-highlight-links a {
+    outline: 2px solid var(--accent-soft);
+    background-color: var(--accent-soft-bg);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+    color: var(--text-main);
+}
+
+/* Highlight headings (h1 فقط) */
+html.a11y-highlight-headings h1,
+html.a11y-highlight-headings h2,
+html.a11y-highlight-headings h3,
+html.a11y-highlight-headings h4,
+html.a11y-highlight-headings h5,
+html.a11y-highlight-headings h6 {
+    outline: 2px solid #60a5fa;
+    background-color: #eff6ff;
+    color: #000000 !important;
+    box-shadow: 0 0 0 2px #60a5fa;
+}
+
+/* hide scroll bar */
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.successStoriesSwiper {
+    overflow: visible;
+}
+
+/* كل السلايد يبقى نفس الارتفاع */
+.successStoriesSwiper .swiper-wrapper {
+    align-items: stretch;
+}
+
+.successStoriesSwiper .swiper-slide {
+    height: auto;
+    display: flex;
+}
+
+.successStoriesSwiper .swiper-slide > * {
+    height: 100%;
+}
+
+/* ✅ pagination container تحت */
+.successStoriesPagination {
+    position: static !important;
+    margin-top: 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+/* bullet base */
+.ss-bullet {
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 9999px !important;
+    background: var(--border-subtle) !important;
+    opacity: 1 !important;
+    transition: width 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+/* active bullet = pill + accent */
+.ss-bullet-active {
+    width: 22px !important;
+    background: var(--accent) !important;
+}
+
+#app-shell {
+    overflow-x: clip;
+    /* الأفضل */
+}
+
+@supports not (overflow: clip) {
+    #app-shell {
+        overflow-x: hidden;
+    }
+}
+
+.slider-shell {
+    overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+    .slider-shell {
+        overflow-x: hidden;
+    }
+}
