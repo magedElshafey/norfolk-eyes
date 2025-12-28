@@ -73,18 +73,20 @@ const ProcedureDetailsPage: React.FC = () => {
                     />
                   </Link>
                 </div>
-                <a
-                  href="https://google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <MainBtn
-                    text="read more"
-                    theme="outline"
-                    showArrow={false}
-                    variant="solid"
-                  />
-                </a>
+                {queryResult?.data?.leaflets_url && (
+                  <a
+                    href={queryResult?.data?.leaflets_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MainBtn
+                      text="read more"
+                      theme="outline"
+                      showArrow={false}
+                      variant="solid"
+                    />
+                  </a>
+                )}
               </div>
             </section>
           </main>

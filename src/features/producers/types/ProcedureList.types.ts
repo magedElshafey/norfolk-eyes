@@ -58,7 +58,7 @@ export interface Procedure extends BaseProcedure {
     question: string;
     answer: string;
   }[];
-
+  leaflets_url: string
 }
 
 export interface ProcedureListType extends BaseProcedure {
