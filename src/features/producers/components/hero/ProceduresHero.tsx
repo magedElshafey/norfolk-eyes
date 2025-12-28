@@ -17,15 +17,14 @@ const ProceduresHero: FC = () => {
   const animate = { opacity: 1, y: 0 };
   const queryResult = useGetProcedureHero();
   return (
-    <>
+    <motion.div
+      initial={initial}
+      animate={animate}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      aria-labelledby="procedures-hero-heading"
+    >
       {queryResult?.data?.is_active ? (
-        <motion.section
-          aria-labelledby="procedures-hero-heading"
-          className=" bg-[var(--mm-bg)] border-b border-softGray/50"
-          initial={initial}
-          animate={animate}
-          transition={{ duration: 0.45, ease: "easeOut" }}
-        >
+        <section className=" bg-[var(--mm-bg)] border-b border-softGray/50">
           <FetchHandler
             queryResult={queryResult}
             skeletonType="procedure-intro"
@@ -44,9 +43,9 @@ const ProceduresHero: FC = () => {
               </div>
             </div>
           </FetchHandler>
-        </motion.section>
+        </section>
       ) : null}
-    </>
+    </motion.div>
   );
 };
 

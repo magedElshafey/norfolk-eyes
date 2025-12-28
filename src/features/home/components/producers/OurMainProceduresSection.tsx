@@ -28,10 +28,14 @@ const OurMainProceduresSection: FC = () => {
   const animate = { opacity: 1, y: 0 };
 
   return (
-    <>
+    <motion.div
+      ref={sectionRef}
+      initial={initial}
+      animate={inView ? animate : initial}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {queryResult?.data?.is_active ? (
         <section
-          ref={sectionRef}
           aria-labelledby="our-main-procedures-heading"
           className="
         bg-[var(--bg-subtle)]
@@ -39,12 +43,7 @@ const OurMainProceduresSection: FC = () => {
         py-10 md:py-14 lg:py-16
       "
         >
-          <motion.div
-            className="containerr"
-            initial={initial}
-            animate={inView ? animate : initial}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
+          <motion.div className="containerr">
             <FetchHandler
               queryResult={queryResult}
               skeletonType="procedure-section-home"
@@ -108,7 +107,7 @@ const OurMainProceduresSection: FC = () => {
           </motion.div>
         </section>
       ) : null}
-    </>
+    </motion.div>
   );
 };
 

@@ -19,7 +19,12 @@ const AboutAffiliationsPreviewSection: FC = () => {
   const animate = { opacity: 1, y: 0 };
 
   return (
-    <>
+    <motion.div
+      ref={ref}
+      initial={initial}
+      animate={inView ? animate : initial}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {queryResult?.data?.is_active ? (
         <section
           aria-labelledby="about-affiliations-heading"
@@ -28,22 +33,16 @@ const AboutAffiliationsPreviewSection: FC = () => {
         border-b border-[var(--border-subtle)]
       "
         >
-          <motion.div
-            ref={ref}
-            initial={initial}
-            animate={inView ? animate : initial}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="containerr py-6"
-          >
+          <div className="containerr py-6">
             <FetchHandler queryResult={queryResult} skeletonType="about-home">
               <AffiliationSlider
                 items={queryResult?.data?.affiliations || []}
               />
             </FetchHandler>
-          </motion.div>
+          </div>
         </section>
       ) : null}
-    </>
+    </motion.div>
   );
 };
 

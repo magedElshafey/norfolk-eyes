@@ -29,7 +29,12 @@ const PatientEducationSection: FC = () => {
     page: "home",
   });
   return (
-    <>
+    <motion.div
+      ref={ref}
+      initial={initial}
+      animate={inView ? animate : initial}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {queryResult?.data?.is_active ? (
         <section
           aria-labelledby="patient-education-heading"
@@ -38,13 +43,7 @@ const PatientEducationSection: FC = () => {
         border-b border-[var(--border-subtle)]
       "
         >
-          <motion.div
-            ref={ref}
-            initial={initial}
-            animate={inView ? animate : initial}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="containerr py-10 md:py-14 lg:py-16 space-y-8 md:space-y-10"
-          >
+          <div className="containerr py-10 md:py-14 lg:py-16 space-y-8 md:space-y-10">
             <FetchHandler
               queryResult={queryResult}
               skeletonType="patient-education-home-section"
@@ -131,10 +130,10 @@ const PatientEducationSection: FC = () => {
                 </div>
               </section>
             </FetchHandler>
-          </motion.div>
+          </div>
         </section>
       ) : null}
-    </>
+    </motion.div>
   );
 };
 

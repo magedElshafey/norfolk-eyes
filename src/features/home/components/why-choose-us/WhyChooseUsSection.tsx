@@ -24,25 +24,23 @@ const WhyChooseUsSection: FC = () => {
     ? { opacity: 1, y: 0 }
     : { opacity: 0, y: 16 };
   const animate = { opacity: 1, y: 0 };
-
   return (
-    <>
-      {queryResult?.data?.is_active ? (
-        <section
-          ref={sectionRef}
-          aria-labelledby="why-choose-us-heading"
-          className="
+    <motion.div
+      initial={initial}
+      animate={inView ? animate : initial}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      ref={sectionRef}
+      aria-labelledby="why-choose-us-heading"
+    >
+      <FetchHandler queryResult={queryResult} skeletonType="stats">
+        {queryResult?.data && queryResult?.data?.is_active ? (
+          <section
+            className="
         bg-[var(--bg-subtle)]
         border-y border-[var(--border-subtle)]
       "
-        >
-          <motion.div
-            className="containerr py-10 md:py-14 lg:py-16"
-            initial={initial}
-            animate={inView ? animate : initial}
-            transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <FetchHandler queryResult={queryResult} skeletonType="stats">
+            <div className="containerr py-10 md:py-14 lg:py-16">
               <div
                 className=" flex flex-col-reverse gap-10
     lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]
@@ -94,11 +92,11 @@ const WhyChooseUsSection: FC = () => {
                   />
                 </div>
               </div>
-            </FetchHandler>
-          </motion.div>
-        </section>
-      ) : null}
-    </>
+            </div>
+          </section>
+        ) : null}
+      </FetchHandler>
+    </motion.div>
   );
 };
 

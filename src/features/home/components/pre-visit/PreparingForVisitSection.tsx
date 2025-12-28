@@ -25,7 +25,12 @@ const PreparingForVisitSection: FC = () => {
   const animate = { opacity: 1, y: 0 };
   const queryResult = useGetPrevistDetails();
   return (
-    <>
+    <motion.div
+      ref={ref}
+      initial={initial}
+      animate={inView ? animate : initial}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {queryResult?.data?.is_active ? (
         <section
           aria-labelledby="preparing-visit-heading"
@@ -34,13 +39,7 @@ const PreparingForVisitSection: FC = () => {
         border-t border-b border-[var(--border-subtle)]
       "
         >
-          <motion.div
-            ref={ref}
-            initial={initial}
-            animate={inView ? animate : initial}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="containerr py-10 md:py-14 lg:py-16 space-y-8 md:space-y-10"
-          >
+          <div className="containerr py-10 md:py-14 lg:py-16 space-y-8 md:space-y-10">
             <FetchHandler queryResult={queryResult} skeletonType="pre-visit">
               {/* Header */}
               <div className="max-w-3xl space-y-2 md:space-y-3">
@@ -106,10 +105,10 @@ const PreparingForVisitSection: FC = () => {
                 )}
               </div>
             </FetchHandler>
-          </motion.div>
+          </div>
         </section>
       ) : null}
-    </>
+    </motion.div>
   );
 };
 

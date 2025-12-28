@@ -39,7 +39,6 @@ const Home = () => {
       <AboutAffiliationsPreviewSection />
       <OurMainProceduresSection />
       <PatientEducationSection />
-      {/* <TechnologySection /> */}
       <PreparingForVisitSection />
       <FaqSection />
       <SuccessStoriesSlider />

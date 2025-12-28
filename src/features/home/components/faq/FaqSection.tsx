@@ -39,7 +39,12 @@ const FaqSection: FC = () => {
       };
   const queryResult = useGetFaq();
   return (
-    <>
+    <motion.div
+      ref={ref}
+      variants={containerVariants}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+    >
       {queryResult?.data?.is_active ? (
         <section
           aria-labelledby="home-faq-heading"
@@ -62,13 +67,7 @@ const FaqSection: FC = () => {
           blur-3xl
         "
           />
-          <motion.div
-            ref={ref}
-            variants={containerVariants}
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            className="relative containerr py-10 md:py-14 lg:py-16"
-          >
+          <div className="relative containerr py-10 md:py-14 lg:py-16">
             <FetchHandler queryResult={queryResult} skeletonType="faq-section">
               <div className="flex flex-col items-center justify-center text-center gap-2 mb-6">
                 <SectionIntro title={queryResult?.data?.section?.intro || ""} />
@@ -140,10 +139,10 @@ const FaqSection: FC = () => {
                 </Link>
               </div>
             </FetchHandler>
-          </motion.div>
+          </div>
         </section>
       ) : null}
-    </>
+    </motion.div>
   );
 };
 
