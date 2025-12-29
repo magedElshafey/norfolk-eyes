@@ -48,4 +48,13 @@ export const apiRoutes = {
   cookies: "static-pages/cookies-policy",
   terms: "static-pages/terms-of-use",
   disclaimer: "static-pages/medical-disclaimer",
+  aboutHero: "/content/dr-hero",
+  awards: "/content/awardsAchievements",
+  aboutExp: "/content/experience-timeline",
+  qualifications: "/content/qualification",
+  aboutServices: "/content/clinical-profile",
+  workGallery: "/content/clinicWorkGallery",
+  visionDisc: "/content/vision-info",
+  contactIntro: "/content/contact-intro",
+  preVisitIntro: "/content/pre-visit-intro"
 };

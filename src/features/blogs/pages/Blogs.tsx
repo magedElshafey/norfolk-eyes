@@ -36,7 +36,13 @@ const Blogs = () => {
   const headingId = "blogs-heading";
   const queryResult = useGetEducationSystem();
   return (
-    <>
+    <motion.section
+      ref={sectionRef}
+      aria-label={t("Blogs.ariaLabel", "Eye health guides & articles")}
+      initial={initial}
+      animate={inView ? animate : initial}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {queryResult?.data?.is_active ? (
         <main
           aria-labelledby={headingId}
@@ -45,14 +51,7 @@ const Blogs = () => {
         border-b border-softGray/70
       "
         >
-          <motion.section
-            ref={sectionRef}
-            aria-label={t("Blogs.ariaLabel", "Eye health guides & articles")}
-            initial={initial}
-            animate={inView ? animate : initial}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="containerr py-10 md:py-16 lg:py-20"
-          >
+          <motion.section className="containerr py-10 md:py-16 lg:py-20">
             <FetchHandler
               queryResult={queryResult}
               skeletonType="patient-education-home-section"
@@ -105,6 +104,7 @@ const Blogs = () => {
                     >
                       <EducationVideosRow
                         videos={queryResult?.data?.section?.videos}
+                        isHome={false}
                       />
                     </section>
                   )}
@@ -113,7 +113,7 @@ const Blogs = () => {
           </motion.section>
         </main>
       ) : null}
-    </>
+    </motion.section>
   );
 };
 

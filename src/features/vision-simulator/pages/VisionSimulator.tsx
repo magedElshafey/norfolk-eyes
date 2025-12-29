@@ -77,67 +77,65 @@ const VisionSimulator: React.FC = () => {
 
   return (
     <>
-      {queryResult?.data?.is_active ? (
-        <FetchHandler queryResult={queryResult} skeletonType="vision-simulator">
-          <section
-            id="vision-simulator"
-            className="containerr py-8 md:py-10 lg:py-12"
-          >
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] items-start">
-              {/* Controls */}
-              <div className="space-y-4">
-                <SceneSelector
-                  scenes={scenes}
-                  selected={sceneId}
-                  onChange={setSceneId}
-                />
+      <FetchHandler queryResult={queryResult} skeletonType="vision-simulator">
+        <section
+          id="vision-simulator"
+          className="containerr py-8 md:py-10 lg:py-12"
+        >
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] items-start">
+            {/* Controls */}
+            <div className="space-y-4">
+              <SceneSelector
+                scenes={scenes}
+                selected={sceneId}
+                onChange={setSceneId}
+              />
 
-                <ConditionSelector
-                  conditions={conditions}
-                  selected={conditionId}
-                  onChange={setConditionId}
-                />
+              <ConditionSelector
+                conditions={conditions}
+                selected={conditionId}
+                onChange={setConditionId}
+              />
 
-                <LensSelector
-                  lenses={lenses}
-                  primary={primaryLens}
-                  onPrimaryChange={setPrimaryLens}
-                  enableBeforeAfter={enableBeforeAfter}
-                  onToggleBeforeAfter={setEnableBeforeAfter}
-                  enableLensCompare={enableLensCompare}
-                  onToggleLensCompare={setEnableLensCompare}
-                  compareLens={compareLens}
-                  onCompareChange={setCompareLens}
+              <LensSelector
+                lenses={lenses}
+                primary={primaryLens}
+                onPrimaryChange={setPrimaryLens}
+                enableBeforeAfter={enableBeforeAfter}
+                onToggleBeforeAfter={setEnableBeforeAfter}
+                enableLensCompare={enableLensCompare}
+                onToggleLensCompare={setEnableLensCompare}
+                compareLens={compareLens}
+                onCompareChange={setCompareLens}
+              />
+              <div className="flex items-center justify-center">
+                <MainBtn
+                  type="button"
+                  text="Clear"
+                  onClick={handleReset}
+                  variant="pill"
                 />
-                <div className="flex items-center justify-center">
-                  <MainBtn
-                    type="button"
-                    text="Clear"
-                    onClick={handleReset}
-                    variant="pill"
-                  />
-                </div>
-                {/* {primaryLensObj && (
+              </div>
+              {/* {primaryLensObj && (
               <InfoPanel lens={primaryLensObj} conditionId={conditionId} />
             )} */}
-              </div>
-
-              {/* Preview */}
-              <div className="space-y-4">
-                <VideoPanel
-                  scene={scene}
-                  conditionId={conditionId}
-                  primaryLens={primaryLens}
-                  enableBeforeAfter={enableBeforeAfter}
-                  enableLensCompare={enableLensCompare}
-                  compareLens={compareLens}
-                />
-                <VisionSimulatorDisclaimer />
-              </div>
             </div>
-          </section>
-        </FetchHandler>
-      ) : null}
+
+            {/* Preview */}
+            <div className="space-y-4">
+              <VideoPanel
+                scene={scene}
+                conditionId={conditionId}
+                primaryLens={primaryLens}
+                enableBeforeAfter={enableBeforeAfter}
+                enableLensCompare={enableLensCompare}
+                compareLens={compareLens}
+              />
+              <VisionSimulatorDisclaimer />
+            </div>
+          </div>
+        </section>
+      </FetchHandler>
     </>
   );
 };

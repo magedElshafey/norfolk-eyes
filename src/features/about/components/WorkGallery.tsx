@@ -17,9 +17,9 @@ import "keen-slider/keen-slider.min.css";
 import SectionTitle from "@/common/components/sections/SectionTitle";
 import SectionIntro from "@/common/components/sections/SectionIntro";
 import SectionDescription from "@/common/components/sections/SectionDescription";
-import { doctorPlaceholder } from "../data/doctor.placeholder";
 import { Card } from "./ui";
-
+import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
+import useGetWorkGallery from "../api/useGetWorkGallery";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/store/LanguageProvider";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
@@ -106,8 +106,7 @@ const BREAKPOINTS: NonNullable<KeenSliderOptions["breakpoints"]> = {
 /* -------------------------------- Component -------------------------------- */
 
 const WorkGallery: React.FC = () => {
-  const doctor = doctorPlaceholder;
-
+  const query = useGetWorkGallery();
   const { t, i18n } = useTranslation();
   const { language } = useLanguage();
   const isRTL = language ? language === "ar" : i18n.dir() === "rtl";
@@ -121,8 +120,10 @@ const WorkGallery: React.FC = () => {
     sliderContainerRef as React.RefObject<HTMLElement>
   );
 
-  const gallery = useMemo(() => doctor.gallery ?? [], [doctor.gallery]);
-  const total = gallery.length;
+  const total =
+    query?.data?.is_active && query?.data?.section?.image_gallery?.length > 0
+      ? query?.data?.section?.image_gallery.length
+      : 0;
 
   const [loaded, setLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -269,135 +270,139 @@ const WorkGallery: React.FC = () => {
       }}
       aria-labelledby={`${sectionId}-heading`}
       aria-roledescription="carousel"
-      className="bg-[var(--bg-subtle)] border-y border-[var(--border-subtle)] py-10 md:py-14 lg:py-16"
     >
-      <div className="containerr space-y-4">
-        {/* Header */}
-        <div className="space-y-2">
-          <SectionIntro title="Media" />
-          <SectionTitle
-            text="Clinic & work gallery"
-            as="h2"
-            id={`${sectionId}-heading`}
-          />
-          <div className="max-w-[80%]">
-            <SectionDescription description="Ready for dashboard uploads: use real clinic photos, diagnostic images (anonymised), or educational visuals." />
-          </div>
-
-          {/* SR status */}
-          <p className="sr-only" aria-live="polite">
-            {total > 0
-              ? t("Clinic.carouselStatus", "Slide {{x}} of {{y}}", {
-                  x: currentSlide + 1,
-                  y: total,
-                })
-              : ""}
-          </p>
-        </div>
-
-        {/* Controls */}
-        {canShowControls && (
-          <div className="flex items-center gap-2 invisible sm:visible w-full">
-            <button
-              type="button"
-              onClick={goPrev}
-              className="
-                inline-flex h-9 w-9 items-center justify-center rounded-full
-                border border-[var(--border-subtle)]
-                bg-[var(--card-bg)]
-                text-[color:var(--text-main)]
-                hover:bg-[var(--accent-soft-bg)]
-                focus:outline-none focus-visible:ring-2
-                focus-visible:ring-[color:var(--focus-ring)]
-                focus-visible:ring-offset-2
-                focus-visible:ring-offset-[var(--bg-subtle)]
-              "
-              aria-label={prevLabel}
-              aria-controls={`${sectionId}-slider`}
-            >
-              {isRTL ? (
-                <IoChevronForward aria-hidden="true" />
-              ) : (
-                <IoChevronBack aria-hidden="true" />
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={goNext}
-              className="
-                inline-flex h-9 w-9 items-center justify-center rounded-full
-                border border-[var(--border-subtle)]
-                bg-[var(--card-bg)]
-                text-[color:var(--text-main)]
-                hover:bg-[var(--accent-soft-bg)]
-                focus:outline-none focus-visible:ring-2
-                focus-visible:ring-[color:var(--focus-ring)]
-                focus-visible:ring-offset-2
-                focus-visible:ring-offset-[var(--bg-subtle)]
-              "
-              aria-label={nextLabel}
-              aria-controls={`${sectionId}-slider`}
-            >
-              {isRTL ? (
-                <IoChevronBack aria-hidden="true" />
-              ) : (
-                <IoChevronForward aria-hidden="true" />
-              )}
-            </button>
-          </div>
-        )}
-
-        {/* Slider */}
-        <div
-          id={`${sectionId}-slider`}
-          ref={sliderRef}
-          dir={isRTL ? "rtl" : "ltr"}
-          role="group"
-          aria-label={carouselLabel}
-          aria-roledescription="carousel"
-          tabIndex={0}
-          onKeyDown={handleKeyDown}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
-          onFocusCapture={handleFocusCapture}
-          onBlurCapture={handleBlurCapture}
-          className="keen-slider outline-none !overflow-visible items-stretch"
-        >
-          {gallery.map((g, idx) => (
-            <div
-              key={`${idx}-${g?.imageUrl ?? "img"}`}
-              className="keen-slider__slide h-full"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={t("Clinic.slideLabel", "Slide {{x}} of {{y}}", {
-                x: idx + 1,
-                y: total,
-              })}
-            >
-              <Card className="overflow-hidden h-full">
-                <div className="aspect-[4/3]">
-                  <img
-                    src={g.imageUrl}
-                    alt={g.alt}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
+      <FetchHandler queryResult={query} skeletonType="slider">
+        {query?.data?.is_active ? (
+          <div className="bg-[var(--bg-subtle)] border-y border-[var(--border-subtle)] py-10 md:py-14 lg:py-16">
+            <div className="containerr space-y-4">
+              {/* Header */}
+              <div className="space-y-2">
+                <SectionIntro title={query?.data?.section?.intro} />
+                <SectionTitle
+                  text={query?.data?.section?.heading}
+                  as="h2"
+                  id={`${sectionId}-heading`}
+                />
+                <div className="max-w-[80%]">
+                  <SectionDescription
+                    description={query?.data?.section?.description}
                   />
                 </div>
-                <div className="p-4">
-                  <p className="text-sm font-semibold text-[var(--accent)]">
-                    {g.title}
-                  </p>
-                  <p className="mt-1 text-xs text-[var(--text-muted)]">
-                    Managed via dashboard
-                  </p>
+
+                {/* SR status */}
+                <p className="sr-only" aria-live="polite">
+                  {total > 0
+                    ? t("Clinic.carouselStatus", "Slide {{x}} of {{y}}", {
+                        x: currentSlide + 1,
+                        y: total,
+                      })
+                    : ""}
+                </p>
+              </div>
+
+              {/* Controls */}
+              {canShowControls && (
+                <div className="flex items-center gap-2 invisible sm:visible w-full">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="
+                inline-flex h-9 w-9 items-center justify-center rounded-full
+                border border-[var(--border-subtle)]
+                bg-[var(--card-bg)]
+                text-[color:var(--text-main)]
+                hover:bg-[var(--accent-soft-bg)]
+                focus:outline-none focus-visible:ring-2
+                focus-visible:ring-[color:var(--focus-ring)]
+                focus-visible:ring-offset-2
+                focus-visible:ring-offset-[var(--bg-subtle)]
+              "
+                    aria-label={prevLabel}
+                    aria-controls={`${sectionId}-slider`}
+                  >
+                    {isRTL ? (
+                      <IoChevronForward aria-hidden="true" />
+                    ) : (
+                      <IoChevronBack aria-hidden="true" />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="
+                inline-flex h-9 w-9 items-center justify-center rounded-full
+                border border-[var(--border-subtle)]
+                bg-[var(--card-bg)]
+                text-[color:var(--text-main)]
+                hover:bg-[var(--accent-soft-bg)]
+                focus:outline-none focus-visible:ring-2
+                focus-visible:ring-[color:var(--focus-ring)]
+                focus-visible:ring-offset-2
+                focus-visible:ring-offset-[var(--bg-subtle)]
+              "
+                    aria-label={nextLabel}
+                    aria-controls={`${sectionId}-slider`}
+                  >
+                    {isRTL ? (
+                      <IoChevronBack aria-hidden="true" />
+                    ) : (
+                      <IoChevronForward aria-hidden="true" />
+                    )}
+                  </button>
                 </div>
-              </Card>
+              )}
+
+              {/* Slider */}
+              <div
+                id={`${sectionId}-slider`}
+                ref={sliderRef}
+                dir={isRTL ? "rtl" : "ltr"}
+                role="group"
+                aria-label={carouselLabel}
+                aria-roledescription="carousel"
+                tabIndex={0}
+                onKeyDown={handleKeyDown}
+                onPointerEnter={handlePointerEnter}
+                onPointerLeave={handlePointerLeave}
+                onFocusCapture={handleFocusCapture}
+                onBlurCapture={handleBlurCapture}
+                className="keen-slider outline-none !overflow-visible items-stretch"
+              >
+                {query?.data?.section?.image_gallery.map((g, idx) => (
+                  <div
+                    key={`${idx}-${g?.image ?? "img"}`}
+                    className="keen-slider__slide h-full"
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={t("Clinic.slideLabel", "Slide {{x}} of {{y}}", {
+                      x: idx + 1,
+                      y: total,
+                    })}
+                  >
+                    <Card className="overflow-hidden h-full">
+                      <div className="aspect-[4/3]">
+                        <img
+                          src={g.image || ""}
+                          alt={g.title}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <p className="text-sm font-semibold text-[var(--accent)]">
+                          {g.title}
+                        </p>
+                      </div>
+                    </Card>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        ) : null}
+      </FetchHandler>
     </section>
   );
 };

@@ -14,3 +14,7 @@ export function normalizeTags(tags: unknown): string[] {
 
   return [];
 }
+export function normalizeToArray(value?: string | string[] | null): string[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}

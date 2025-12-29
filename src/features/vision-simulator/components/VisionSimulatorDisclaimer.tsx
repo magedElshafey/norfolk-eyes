@@ -1,61 +1,45 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-
+import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
+import useGetVisionDisc from "../api/useGetVisionDisc";
+import SectionTitle from "@/common/components/sections/SectionTitle";
+import SectionDescription from "@/common/components/sections/SectionDescription";
+import SectionDetails from "@/common/components/sections/SectionDetails";
+import SectionEnding from "@/common/components/sections/SectionEnding";
 type Props = {
   className?: string;
 };
 
 const VisionSimulatorDisclaimer: React.FC<Props> = ({ className = "" }) => {
   const { t } = useTranslation();
-
+  const query = useGetVisionDisc();
   return (
-    <section
-      aria-label={t("VisionSimulatorDisclaimer.title")}
-      className={`
+    <section aria-label={t("VisionSimulatorDisclaimer.title")}>
+      <FetchHandler queryResult={query} skeletonType="custome">
+        {query?.data?.is_active ? (
+          <div
+            className={`
         rounded-2xl border border-[color:var(--border-subtle)]
         bg-[color:var(--bg-card)]
         p-4 md:p-5
         ${className}
       `}
-    >
-      <h3 className="text-sm md:text-base font-semibold text-[color:var(--primary-green)]">
-        {t("VisionSimulatorDisclaimer.title")}
-      </h3>
-
-      <p className="mt-2 text-sm leading-6 text-[color:var(--text-muted)]">
-        {t("VisionSimulatorDisclaimer.summary")}
-      </p>
-
-      <ul className="mt-3 space-y-2 text-sm leading-6 text-[color:var(--text-muted)]">
-        <li className="flex gap-2">
-          <span aria-hidden className="mt-[2px]">
-            •
-          </span>
-          <span>{t("VisionSimulatorDisclaimer.point1")}</span>
-        </li>
-        <li className="flex gap-2">
-          <span aria-hidden className="mt-[2px]">
-            •
-          </span>
-          <span>{t("VisionSimulatorDisclaimer.point2")}</span>
-        </li>
-        <li className="flex gap-2">
-          <span aria-hidden className="mt-[2px]">
-            •
-          </span>
-          <span>{t("VisionSimulatorDisclaimer.point3")}</span>
-        </li>
-        <li className="flex gap-2">
-          <span aria-hidden className="mt-[2px]">
-            •
-          </span>
-          <span>{t("VisionSimulatorDisclaimer.point4")}</span>
-        </li>
-      </ul>
-
-      <p className="mt-4 text-xs leading-5 text-[color:var(--text-muted)]">
-        {t("VisionSimulatorDisclaimer.note")}
-      </p>
+          >
+            <div className="space-y-3">
+              <SectionTitle text={query?.data?.section?.heading} as="h3" />
+              <SectionDescription
+                description={query?.data?.section?.description}
+              />
+              <ul className="flex flex-col gap-1.5 text-xs md:text-sm">
+                {query?.data?.section.details?.map((item, index) => (
+                  <SectionDetails key={index} item={item} bullets="•" />
+                ))}
+              </ul>
+              <SectionEnding text={query?.data?.section?.ending} />
+            </div>
+          </div>
+        ) : null}
+      </FetchHandler>
     </section>
   );
 };
