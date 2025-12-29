@@ -7,7 +7,6 @@ const useGetCookies = () => {
     queryKey: [apiRoutes?.cookies],
     queryFn: async () => {
       const { data } = await Axios.get(apiRoutes?.cookies);
-      console.log("data from privacy", data?.data);
       return data?.data as Articles;
     },
   });
