@@ -42,11 +42,9 @@ const ProcedureDetailsPage: React.FC = () => {
               className="containerr py-6 md:py-8 lg:py-10 space-y-8"
               aria-label={t("Procedure information")}
             >
-              {queryResult?.data &&
-                queryResult?.data?.features &&
-                queryResult?.data?.features?.length > 0 && (
-                  <ProcedureKeyFacts features={queryResult?.data?.features} />
-                )}
+              {queryResult?.data && queryResult?.data?.feature && (
+                <ProcedureKeyFacts features={queryResult?.data?.feature} />
+              )}
               <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)]">
                 {queryResult?.data && (
                   <ProcedureOverview procedure={queryResult?.data} />

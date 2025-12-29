@@ -4,10 +4,7 @@ export interface ProcedureSearch {
   slug: string;
   type: string;
 }
-export interface FeatureType {
-  title: string;
-  description: string;
-}
+
 export interface ProceduresCategory {
   id: number;
   name: string;
@@ -34,7 +31,12 @@ export interface Procedure extends BaseProcedure {
   parent_id: number | null;
   category: ProceduresCategory;
   children?: ProcedureListType[];
-  features?: FeatureType[];
+  feature?: {
+    duration_minutes: string,
+    anesthesia: string,
+    recovery_days: string,
+    is_eyelid_treated: string,
+  };
   assets: {
     images?: {
       url: string;

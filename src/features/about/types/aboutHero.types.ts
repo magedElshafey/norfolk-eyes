@@ -11,7 +11,7 @@ export interface AboutDoc {
         description: string,
         details: string[]
         cards: Card[]
-        role?: string
+        job_title?: string
         image?: string
     },
     is_active: boolean

@@ -39,7 +39,14 @@ const MainDate = React.forwardRef<HTMLInputElement, MainDateProps>(
             className="text-sm md:text-base block mb-2 font-medium text-gray-700"
           >
             {t(label)}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && (
+              <span
+                className="ml-1"
+                style={{ color: "var(--field-error-text)" }}
+              >
+                *
+              </span>
+            )}
           </label>
         )}
 

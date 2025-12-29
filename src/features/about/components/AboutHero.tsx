@@ -1,14 +1,11 @@
 import SectionIntro from "@/common/components/sections/SectionIntro";
 import SectionTitle from "@/common/components/sections/SectionTitle";
-// import { doctorPlaceholder } from "../data/doctor.placeholder";
 import SectionDescription from "@/common/components/sections/SectionDescription";
 import SectionDetails from "@/common/components/sections/SectionDetails";
-// import { Card } from "./ui";
 import { useRef } from "react";
 import useGetAboutHero from "../api/useGetAboutHero";
 import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
 const AboutHero = () => {
-  // const doctor = doctorPlaceholder;
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const queryResult = useGetAboutHero();
   return (
@@ -21,10 +18,10 @@ const AboutHero = () => {
                 <div className="space-y-3">
                   <SectionIntro title={queryResult?.data?.section?.intro} />
                   <SectionTitle text={queryResult?.data?.section?.heading} />
-                  {queryResult?.data?.section?.role && (
+                  {queryResult?.data?.section?.job_title && (
                     <SectionTitle
                       as="h3"
-                      text={queryResult?.data?.section.role}
+                      text={queryResult?.data?.section.job_title}
                     />
                   )}
 
@@ -38,14 +35,6 @@ const AboutHero = () => {
                       ))}
                     </ul>
                   )}
-
-                  {/* <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                  {doctor.intro.map((p, idx) => (
-                    <Card key={idx} className="p-5">
-                      <p className="text-sm">{p}</p>
-                    </Card>
-                  ))}
-                </div> */}
                 </div>
                 <div className="space-y-7">
                   <div className="w-full h-[360px] md:h-[420px] lg:h-[480px] overflow-hidden">
