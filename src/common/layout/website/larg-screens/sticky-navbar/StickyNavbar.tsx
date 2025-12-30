@@ -1,17 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../navbar/Navbar";
 import type { NavbarProps } from "../navbar/Navbar";
-// import { useLocation } from "react-router-dom";
 
 const StickyNavbar: React.FC<NavbarProps> = ({ logo = "" }) => {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [isSticky, setIsSticky] = useState(false);
-
-  // const { pathname } = useLocation();
-
-  // const isPatientEducationArticle =
-  //   pathname.startsWith("/patient-education/") &&
-  //   pathname !== "/patient-education";
 
   useEffect(() => {
     const el = sentinelRef.current;

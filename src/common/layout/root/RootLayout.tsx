@@ -6,7 +6,6 @@ const RootLayout = () => {
 
   return (
     <>
-      {/* ✅ يحفظ ويرجع scroll positions تلقائيًا مع RouterProvider */}
       <ScrollRestoration
         getKey={(location) => location.pathname + location.search}
       />

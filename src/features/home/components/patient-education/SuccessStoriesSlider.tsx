@@ -15,6 +15,8 @@ import {
 } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 
+import { LazyMotion, domAnimation, m, useReducedMotion } from "framer-motion";
+
 import SuccessStoryCard from "./SuccessStoryCard";
 import useGetSuccessStories from "../../api/useGetSuccessStories";
 import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
@@ -25,40 +27,7 @@ import { useLanguage } from "@/store/LanguageProvider";
 import MainBtn from "@/common/components/buttons/MainBtn";
 import BookConsultationButton from "@/common/components/buttons/book-consultation-button/BookConsultationButton";
 
-/* ---------------------------- Helpers (Hooks) ---------------------------- */
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      setReduced("matches" in e ? e.matches : mql.matches);
-    };
-
-    // init
-    setReduced(mql.matches);
-
-    // modern
-    if (typeof mql.addEventListener === "function") {
-      const handler = onChange as (e: MediaQueryListEvent) => void;
-      mql.addEventListener("change", handler);
-      return () => mql.removeEventListener("change", handler);
-    }
-
-    // legacy Safari
-    const legacy = mql as unknown as {
-      addListener: (fn: (e: MediaQueryList) => void) => void;
-      removeListener: (fn: (e: MediaQueryList) => void) => void;
-    };
-    legacy.addListener(onChange as (e: MediaQueryList) => void);
-    return () => legacy.removeListener(onChange as (e: MediaQueryList) => void);
-  }, []);
-
-  return reduced;
-}
+/* ---------------------------- Helpers ---------------------------- */
 
 function usePageVisibility() {
   const [visible, setVisible] = useState(true);
@@ -96,7 +65,7 @@ function useInViewport<T extends HTMLElement>(ref: React.RefObject<T>) {
   return inView;
 }
 
-/* --------------------------- Static slider config --------------------------- */
+/* --------------------------- Slider config --------------------------- */
 
 const DEFAULT_PER_VIEW = 5;
 
@@ -106,6 +75,9 @@ const BREAKPOINTS: NonNullable<KeenSliderOptions["breakpoints"]> = {
   "(max-width: 1024px)": { slides: { perView: 2, spacing: 16 } },
   "(max-width: 580px)": { slides: { perView: 1, spacing: 12 } },
 };
+
+// ✅ valid Framer easing (instead of "easeOut" string)
+const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 /* -------------------------------- Component -------------------------------- */
 
@@ -117,7 +89,8 @@ const SuccessStoriesSlider: React.FC = () => {
   const sectionId = useId();
   const sliderContainerRef = useRef<HTMLElement | null>(null);
 
-  const prefersReducedMotion = usePrefersReducedMotion();
+  // ✅ Framer built-in
+  const shouldReduceMotion = useReducedMotion();
   const pageVisible = usePageVisibility();
   const inViewport = useInViewport(
     sliderContainerRef as React.RefObject<HTMLElement>
@@ -132,7 +105,6 @@ const SuccessStoriesSlider: React.FC = () => {
 
   const total = reviews.length;
 
-  // Track slider state for UX + a11y
   const [loaded, setLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(DEFAULT_PER_VIEW);
@@ -157,15 +129,16 @@ const SuccessStoriesSlider: React.FC = () => {
       if (!loaded) return;
       if (!pageVisible) return;
       if (!inViewport) return;
-      if (prefersReducedMotion) return;
+      if (shouldReduceMotion) return;
       if (!slider) return;
+      if (total <= 1) return;
 
       clearAutoplay();
       autoplayTimerRef.current = window.setInterval(() => {
         slider.next();
       }, AUTOPLAY_MS);
     },
-    [loaded, pageVisible, inViewport, prefersReducedMotion, clearAutoplay]
+    [loaded, pageVisible, inViewport, shouldReduceMotion, clearAutoplay, total]
   );
 
   const keenOptions = useMemo<KeenSliderOptions>(
@@ -179,25 +152,28 @@ const SuccessStoriesSlider: React.FC = () => {
       breakpoints: BREAKPOINTS,
       created(slider) {
         setLoaded(true);
-        setSlidesPerView(
+
+        const perView =
           typeof slider.options.slides === "object" &&
-            slider.options.slides &&
-            "perView" in slider.options.slides &&
-            typeof (slider.options.slides as any).perView === "number"
+          slider.options.slides &&
+          "perView" in slider.options.slides &&
+          typeof (slider.options.slides as any).perView === "number"
             ? ((slider.options.slides as any).perView as number)
-            : DEFAULT_PER_VIEW
-        );
+            : DEFAULT_PER_VIEW;
+
+        setSlidesPerView(perView);
         setCurrentSlide(slider.track.details.rel);
       },
       updated(slider) {
-        setSlidesPerView(
+        const perView =
           typeof slider.options.slides === "object" &&
-            slider.options.slides &&
-            "perView" in slider.options.slides &&
-            typeof (slider.options.slides as any).perView === "number"
+          slider.options.slides &&
+          "perView" in slider.options.slides &&
+          typeof (slider.options.slides as any).perView === "number"
             ? ((slider.options.slides as any).perView as number)
-            : DEFAULT_PER_VIEW
-        );
+            : DEFAULT_PER_VIEW;
+
+        setSlidesPerView(perView);
       },
       slideChanged(slider) {
         setCurrentSlide(slider.track.details.rel);
@@ -215,7 +191,7 @@ const SuccessStoriesSlider: React.FC = () => {
     return () => clearAutoplay();
   }, [instanceRef, startAutoplay, clearAutoplay]);
 
-  // Pause on hover/focus (UX + a11y)
+  // Pause on hover/focus
   const handlePointerEnter = useCallback(
     () => clearAutoplay(),
     [clearAutoplay]
@@ -271,145 +247,160 @@ const SuccessStoriesSlider: React.FC = () => {
   const prevLabel = t("Education.prevStory", "Previous story");
   const nextLabel = t("Education.nextStory", "Next story");
 
+  // ✅ LazyMotion props stable (no unions)
+  const sectionInitial = shouldReduceMotion
+    ? { opacity: 1, y: 0 }
+    : { opacity: 0, y: 12 };
+  const sectionAnimate = { opacity: 1, y: 0 };
+  const sectionTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 0.35, ease: EASE_OUT };
+
   return (
     <FetchHandler queryResult={queryResult} skeletonType="success-stories">
       {queryResult?.data?.is_active ? (
-        <section
-          ref={(node) => {
-            sliderContainerRef.current = node;
-          }}
-          aria-labelledby={`${sectionId}-heading`}
-          aria-roledescription="carousel"
-          className="bg-[var(--bg-subtle)] border-b border-[var(--border-subtle)] py-10 md:py-14 lg:py-16"
-        >
-          <div className="containerr space-y-4">
-            {/* Header + Controls */}
-
-            <div className="w-full">
-              <SectionTitle
-                as="h3"
-                text={heading}
-                id={`${sectionId}-heading`}
-              />
-              <div className="max-w-[80%]">
-                <SectionDescription description={description} />
-              </div>
-
-              {/* SR status */}
-              <p className="sr-only" aria-live="polite">
-                {total > 0
-                  ? t("Education.carouselStatus", "Slide {{x}} of {{y}}", {
-                      x: currentSlide + 1,
-                      y: total,
-                    })
-                  : ""}
-              </p>
-            </div>
-
-            {canShowControls && (
-              <div className="flex items-center gap-2 invisible sm:visible w-full">
-                <button
-                  type="button"
-                  onClick={goPrev}
-                  className="
-                    inline-flex h-9 w-9 items-center justify-center rounded-full
-                    border border-[var(--border-subtle)]
-                    bg-[var(--card-bg)]
-                    text-[color:var(--text-main)]
-                    hover:bg-[var(--accent-soft-bg)]
-                    focus:outline-none focus-visible:ring-2
-                    focus-visible:ring-[color:var(--focus-ring)]
-                    focus-visible:ring-offset-2
-                    focus-visible:ring-offset-[var(--bg-subtle)]
-                  "
-                  aria-label={prevLabel}
-                  aria-controls={`${sectionId}-slider`}
-                >
-                  {isRTL ? (
-                    <IoChevronForward aria-hidden="true" />
-                  ) : (
-                    <IoChevronBack aria-hidden="true" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={goNext}
-                  className="
-                    inline-flex h-9 w-9 items-center justify-center rounded-full
-                    border border-[var(--border-subtle)]
-                    bg-[var(--card-bg)]
-                    text-[color:var(--text-main)]
-                    hover:bg-[var(--accent-soft-bg)]
-                    focus:outline-none focus-visible:ring-2
-                    focus-visible:ring-[color:var(--focus-ring)]
-                    focus-visible:ring-offset-2
-                    focus-visible:ring-offset-[var(--bg-subtle)]
-                  "
-                  aria-label={nextLabel}
-                  aria-controls={`${sectionId}-slider`}
-                >
-                  {isRTL ? (
-                    <IoChevronBack aria-hidden="true" />
-                  ) : (
-                    <IoChevronForward aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* Slider */}
-            <div
-              id={`${sectionId}-slider`}
-              ref={sliderRef}
-              dir={isRTL ? "rtl" : "ltr"}
-              role="group"
-              aria-label={carouselLabel}
-              aria-roledescription="carousel"
-              tabIndex={0}
-              onKeyDown={handleKeyDown}
-              onPointerEnter={handlePointerEnter}
-              onPointerLeave={handlePointerLeave}
-              onFocusCapture={handleFocusCapture}
-              onBlurCapture={handleBlurCapture}
-              className="keen-slider outline-none !overflow-visible items-stretch"
-            >
-              {reviews.map((story, index) => (
-                <div
-                  key={
-                    (story as any)?.id ??
-                    `${index}-${(story as any)?.user_name ?? "story"}`
-                  }
-                  className="keen-slider__slide h-full"
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={t(
-                    "Education.slideLabel",
-                    "Slide {{x}} of {{y}}",
-                    {
-                      x: index + 1,
-                      y: total,
-                    }
-                  )}
-                >
-                  <SuccessStoryCard story={story} />
+        <LazyMotion features={domAnimation}>
+          <m.section
+            ref={(node) => {
+              sliderContainerRef.current = node;
+            }}
+            aria-labelledby={`${sectionId}-heading`}
+            aria-roledescription="carousel"
+            className="bg-[var(--bg-subtle)] border-b border-[var(--border-subtle)] py-10 md:py-14 lg:py-16"
+            initial={sectionInitial}
+            animate={sectionAnimate}
+            transition={sectionTransition}
+          >
+            <div className="containerr space-y-4">
+              {/* Header */}
+              <div className="w-full">
+                <SectionTitle
+                  as="h3"
+                  text={heading}
+                  id={`${sectionId}-heading`}
+                />
+                <div className="max-w-[80%]">
+                  <SectionDescription description={description} />
                 </div>
-              ))}
+
+                <p className="sr-only" aria-live="polite">
+                  {total > 0
+                    ? t("Education.carouselStatus", "Slide {{x}} of {{y}}", {
+                        x: currentSlide + 1,
+                        y: total,
+                      })
+                    : ""}
+                </p>
+              </div>
+
+              {/* Controls */}
+              {canShowControls ? (
+                <div className="flex items-center gap-2 invisible sm:visible w-full">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="
+                      inline-flex h-9 w-9 items-center justify-center rounded-full
+                      border border-[var(--border-subtle)]
+                      bg-[var(--card-bg)]
+                      text-[color:var(--text-main)]
+                      hover:bg-[var(--accent-soft-bg)]
+                      focus:outline-none focus-visible:ring-2
+                      focus-visible:ring-[color:var(--focus-ring)]
+                      focus-visible:ring-offset-2
+                      focus-visible:ring-offset-[var(--bg-subtle)]
+                    "
+                    aria-label={prevLabel}
+                    aria-controls={`${sectionId}-slider`}
+                  >
+                    {isRTL ? (
+                      <IoChevronForward aria-hidden="true" />
+                    ) : (
+                      <IoChevronBack aria-hidden="true" />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="
+                      inline-flex h-9 w-9 items-center justify-center rounded-full
+                      border border-[var(--border-subtle)]
+                      bg-[var(--card-bg)]
+                      text-[color:var(--text-main)]
+                      hover:bg-[var(--accent-soft-bg)]
+                      focus:outline-none focus-visible:ring-2
+                      focus-visible:ring-[color:var(--focus-ring)]
+                      focus-visible:ring-offset-2
+                      focus-visible:ring-offset-[var(--bg-subtle)]
+                    "
+                    aria-label={nextLabel}
+                    aria-controls={`${sectionId}-slider`}
+                  >
+                    {isRTL ? (
+                      <IoChevronBack aria-hidden="true" />
+                    ) : (
+                      <IoChevronForward aria-hidden="true" />
+                    )}
+                  </button>
+                </div>
+              ) : null}
+
+              {/* Slider */}
+              <div
+                id={`${sectionId}-slider`}
+                ref={sliderRef}
+                dir={isRTL ? "rtl" : "ltr"}
+                role="group"
+                aria-label={carouselLabel}
+                aria-roledescription="carousel"
+                tabIndex={0}
+                onKeyDown={handleKeyDown}
+                onPointerEnter={handlePointerEnter}
+                onPointerLeave={handlePointerLeave}
+                onFocusCapture={handleFocusCapture}
+                onBlurCapture={handleBlurCapture}
+                className="keen-slider outline-none !overflow-visible items-stretch"
+              >
+                {reviews.map((story, index) => (
+                  <div
+                    key={
+                      (story as any)?.id ??
+                      `${index}-${(story as any)?.user_name ?? "story"}`
+                    }
+                    className="keen-slider__slide h-full"
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={t(
+                      "Education.slideLabel",
+                      "Slide {{x}} of {{y}}",
+                      {
+                        x: index + 1,
+                        y: total,
+                      }
+                    )}
+                  >
+                    <SuccessStoryCard story={story} />
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <div className="w-full flex justify-center md:justify-end items-center flex-wrap gap-3">
+                <MainBtn theme="secondary">
+                  <a
+                    href="https://www.google.com"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {t("submit review")}
+                  </a>
+                </MainBtn>
+                <BookConsultationButton />
+              </div>
             </div>
-            <div className="w-full flex justify-center md:justify-end items-center flex-wrap gap-3">
-              <MainBtn theme="secondary">
-                <a
-                  href="www.google.com"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  {t("submit review")}
-                </a>
-              </MainBtn>
-              <BookConsultationButton />
-            </div>
-          </div>
-        </section>
+          </m.section>
+        </LazyMotion>
       ) : null}
     </FetchHandler>
   );

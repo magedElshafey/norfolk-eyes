@@ -14,6 +14,8 @@ import {
 } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 
+import { LazyMotion, domAnimation, m, useReducedMotion } from "framer-motion";
+
 import SectionTitle from "@/common/components/sections/SectionTitle";
 import SectionIntro from "@/common/components/sections/SectionIntro";
 import SectionDescription from "@/common/components/sections/SectionDescription";
@@ -25,36 +27,6 @@ import { useLanguage } from "@/store/LanguageProvider";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
 /* ---------------------------- Helpers (Hooks) ---------------------------- */
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      setReduced("matches" in e ? e.matches : mql.matches);
-    };
-
-    setReduced(mql.matches);
-
-    if (typeof mql.addEventListener === "function") {
-      const handler = onChange as (e: MediaQueryListEvent) => void;
-      mql.addEventListener("change", handler);
-      return () => mql.removeEventListener("change", handler);
-    }
-
-    const legacy = mql as unknown as {
-      addListener: (fn: (e: MediaQueryList) => void) => void;
-      removeListener: (fn: (e: MediaQueryList) => void) => void;
-    };
-    legacy.addListener(onChange as (e: MediaQueryList) => void);
-    return () => legacy.removeListener(onChange as (e: MediaQueryList) => void);
-  }, []);
-
-  return reduced;
-}
 
 function usePageVisibility() {
   const [visible, setVisible] = useState(true);
@@ -103,6 +75,9 @@ const BREAKPOINTS: NonNullable<KeenSliderOptions["breakpoints"]> = {
   "(max-width: 640px)": { slides: { perView: 1, spacing: 12 } },
 };
 
+// ✅ Framer Motion v12 safe easing (بديل "easeOut")
+const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 /* -------------------------------- Component -------------------------------- */
 
 const WorkGallery: React.FC = () => {
@@ -114,7 +89,8 @@ const WorkGallery: React.FC = () => {
   const sectionId = useId();
   const sliderContainerRef = useRef<HTMLElement | null>(null);
 
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const shouldReduceMotion = useReducedMotion();
+
   const pageVisible = usePageVisibility();
   const inViewport = useInViewport(
     sliderContainerRef as React.RefObject<HTMLElement>
@@ -148,7 +124,7 @@ const WorkGallery: React.FC = () => {
       if (!loaded) return;
       if (!pageVisible) return;
       if (!inViewport) return;
-      if (prefersReducedMotion) return;
+      if (shouldReduceMotion) return;
       if (!slider) return;
       if (total <= 1) return;
 
@@ -157,14 +133,7 @@ const WorkGallery: React.FC = () => {
         slider.next();
       }, AUTOPLAY_MS);
     },
-    [
-      loaded,
-      pageVisible,
-      inViewport,
-      prefersReducedMotion,
-      clearAutoplay,
-      total,
-    ]
+    [loaded, pageVisible, inViewport, shouldReduceMotion, clearAutoplay, total]
   );
 
   const keenOptions = useMemo<KeenSliderOptions>(
@@ -178,6 +147,7 @@ const WorkGallery: React.FC = () => {
       breakpoints: BREAKPOINTS,
       created(slider) {
         setLoaded(true);
+
         setSlidesPerView(
           typeof slider.options.slides === "object" &&
             slider.options.slides &&
@@ -186,6 +156,7 @@ const WorkGallery: React.FC = () => {
             ? ((slider.options.slides as any).perView as number)
             : DEFAULT_PER_VIEW
         );
+
         setCurrentSlide(slider.track.details.rel);
       },
       updated(slider) {
@@ -263,147 +234,177 @@ const WorkGallery: React.FC = () => {
   const prevLabel = t("Clinic.prevMedia", "Previous media");
   const nextLabel = t("Clinic.nextMedia", "Next media");
 
+  /* ----------------------------- Motion (no warnings) ----------------------------- */
+  const sectionInitial = shouldReduceMotion
+    ? { opacity: 1, y: 0 }
+    : { opacity: 0, y: 12 };
+  const sectionAnimate = { opacity: 1, y: 0 };
+  const sectionTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 0.35, ease: EASE_OUT };
+
+  const sliderInitial = shouldReduceMotion ? { opacity: 1 } : { opacity: 0 };
+  const sliderAnimate = { opacity: 1 };
+  const sliderTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 0.3, ease: EASE_OUT, delay: 0.05 };
+
   return (
-    <section
-      ref={(node) => {
-        sliderContainerRef.current = node;
-      }}
-      aria-labelledby={`${sectionId}-heading`}
-      aria-roledescription="carousel"
-    >
-      <FetchHandler queryResult={query} skeletonType="slider">
-        {query?.data?.is_active ? (
-          <div className="bg-[var(--bg-subtle)] border-y border-[var(--border-subtle)] py-10 md:py-14 lg:py-16">
-            <div className="containerr space-y-4">
-              {/* Header */}
-              <div className="space-y-2">
-                <SectionIntro title={query?.data?.section?.intro} />
-                <SectionTitle
-                  text={query?.data?.section?.heading}
-                  as="h2"
-                  id={`${sectionId}-heading`}
-                />
-                <div className="max-w-[80%]">
-                  <SectionDescription
-                    description={query?.data?.section?.description}
+    <LazyMotion features={domAnimation}>
+      <m.section
+        ref={(node) => {
+          sliderContainerRef.current = node;
+        }}
+        aria-labelledby={`${sectionId}-heading`}
+        aria-roledescription="carousel"
+        initial={sectionInitial}
+        animate={sectionAnimate}
+        transition={sectionTransition}
+      >
+        <FetchHandler queryResult={query} skeletonType="slider">
+          {query?.data?.is_active ? (
+            <div className="bg-[var(--bg-subtle)] border-y border-[var(--border-subtle)] py-10 md:py-14 lg:py-16">
+              <div className="containerr space-y-4">
+                {/* Header */}
+                <div className="space-y-2">
+                  <SectionIntro title={query?.data?.section?.intro} />
+                  <SectionTitle
+                    text={query?.data?.section?.heading}
+                    as="h2"
+                    id={`${sectionId}-heading`}
                   />
-                </div>
-
-                {/* SR status */}
-                <p className="sr-only" aria-live="polite">
-                  {total > 0
-                    ? t("Clinic.carouselStatus", "Slide {{x}} of {{y}}", {
-                        x: currentSlide + 1,
-                        y: total,
-                      })
-                    : ""}
-                </p>
-              </div>
-
-              {/* Controls */}
-              {canShowControls && (
-                <div className="flex items-center gap-2 invisible sm:visible w-full">
-                  <button
-                    type="button"
-                    onClick={goPrev}
-                    className="
-                inline-flex h-9 w-9 items-center justify-center rounded-full
-                border border-[var(--border-subtle)]
-                bg-[var(--card-bg)]
-                text-[color:var(--text-main)]
-                hover:bg-[var(--accent-soft-bg)]
-                focus:outline-none focus-visible:ring-2
-                focus-visible:ring-[color:var(--focus-ring)]
-                focus-visible:ring-offset-2
-                focus-visible:ring-offset-[var(--bg-subtle)]
-              "
-                    aria-label={prevLabel}
-                    aria-controls={`${sectionId}-slider`}
-                  >
-                    {isRTL ? (
-                      <IoChevronForward aria-hidden="true" />
-                    ) : (
-                      <IoChevronBack aria-hidden="true" />
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    className="
-                inline-flex h-9 w-9 items-center justify-center rounded-full
-                border border-[var(--border-subtle)]
-                bg-[var(--card-bg)]
-                text-[color:var(--text-main)]
-                hover:bg-[var(--accent-soft-bg)]
-                focus:outline-none focus-visible:ring-2
-                focus-visible:ring-[color:var(--focus-ring)]
-                focus-visible:ring-offset-2
-                focus-visible:ring-offset-[var(--bg-subtle)]
-              "
-                    aria-label={nextLabel}
-                    aria-controls={`${sectionId}-slider`}
-                  >
-                    {isRTL ? (
-                      <IoChevronBack aria-hidden="true" />
-                    ) : (
-                      <IoChevronForward aria-hidden="true" />
-                    )}
-                  </button>
-                </div>
-              )}
-
-              {/* Slider */}
-              <div
-                id={`${sectionId}-slider`}
-                ref={sliderRef}
-                dir={isRTL ? "rtl" : "ltr"}
-                role="group"
-                aria-label={carouselLabel}
-                aria-roledescription="carousel"
-                tabIndex={0}
-                onKeyDown={handleKeyDown}
-                onPointerEnter={handlePointerEnter}
-                onPointerLeave={handlePointerLeave}
-                onFocusCapture={handleFocusCapture}
-                onBlurCapture={handleBlurCapture}
-                className="keen-slider outline-none !overflow-visible items-stretch"
-              >
-                {query?.data?.section?.image_gallery.map((g, idx) => (
-                  <div
-                    key={`${idx}-${g?.image ?? "img"}`}
-                    className="keen-slider__slide h-full"
-                    role="group"
-                    aria-roledescription="slide"
-                    aria-label={t("Clinic.slideLabel", "Slide {{x}} of {{y}}", {
-                      x: idx + 1,
-                      y: total,
-                    })}
-                  >
-                    <Card className="overflow-hidden h-full">
-                      <div className="aspect-[4/3]">
-                        <img
-                          src={g.image || ""}
-                          alt={g.title}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <p className="text-sm font-semibold text-[var(--accent)]">
-                          {g.title}
-                        </p>
-                      </div>
-                    </Card>
+                  <div className="max-w-[80%]">
+                    <SectionDescription
+                      description={query?.data?.section?.description}
+                    />
                   </div>
-                ))}
+
+                  {/* SR status */}
+                  <p className="sr-only" aria-live="polite">
+                    {total > 0
+                      ? t("Clinic.carouselStatus", "Slide {{x}} of {{y}}", {
+                          x: currentSlide + 1,
+                          y: total,
+                        })
+                      : ""}
+                  </p>
+                </div>
+
+                {/* Controls */}
+                {canShowControls && (
+                  <div className="flex items-center gap-2 invisible sm:visible w-full">
+                    <button
+                      type="button"
+                      onClick={goPrev}
+                      className="
+                        inline-flex h-9 w-9 items-center justify-center rounded-full
+                        border border-[var(--border-subtle)]
+                        bg-[var(--card-bg)]
+                        text-[color:var(--text-main)]
+                        hover:bg-[var(--accent-soft-bg)]
+                        focus:outline-none focus-visible:ring-2
+                        focus-visible:ring-[color:var(--focus-ring)]
+                        focus-visible:ring-offset-2
+                        focus-visible:ring-offset-[var(--bg-subtle)]
+                      "
+                      aria-label={prevLabel}
+                      aria-controls={`${sectionId}-slider`}
+                    >
+                      {isRTL ? (
+                        <IoChevronForward aria-hidden="true" />
+                      ) : (
+                        <IoChevronBack aria-hidden="true" />
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={goNext}
+                      className="
+                        inline-flex h-9 w-9 items-center justify-center rounded-full
+                        border border-[var(--border-subtle)]
+                        bg-[var(--card-bg)]
+                        text-[color:var(--text-main)]
+                        hover:bg-[var(--accent-soft-bg)]
+                        focus:outline-none focus-visible:ring-2
+                        focus-visible:ring-[color:var(--focus-ring)]
+                        focus-visible:ring-offset-2
+                        focus-visible:ring-offset-[var(--bg-subtle)]
+                      "
+                      aria-label={nextLabel}
+                      aria-controls={`${sectionId}-slider`}
+                    >
+                      {isRTL ? (
+                        <IoChevronBack aria-hidden="true" />
+                      ) : (
+                        <IoChevronForward aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {/* Slider */}
+                <m.div
+                  initial={sliderInitial}
+                  animate={sliderAnimate}
+                  transition={sliderTransition}
+                >
+                  <div
+                    id={`${sectionId}-slider`}
+                    ref={sliderRef}
+                    dir={isRTL ? "rtl" : "ltr"}
+                    role="group"
+                    aria-label={carouselLabel}
+                    aria-roledescription="carousel"
+                    tabIndex={0}
+                    onKeyDown={handleKeyDown}
+                    onPointerEnter={handlePointerEnter}
+                    onPointerLeave={handlePointerLeave}
+                    onFocusCapture={handleFocusCapture}
+                    onBlurCapture={handleBlurCapture}
+                    className="keen-slider outline-none !overflow-visible items-stretch"
+                  >
+                    {query?.data?.section?.image_gallery.map((g, idx) => (
+                      <div
+                        key={`${idx}-${g?.image ?? "img"}`}
+                        className="keen-slider__slide h-full"
+                        role="group"
+                        aria-roledescription="slide"
+                        aria-label={t(
+                          "Clinic.slideLabel",
+                          "Slide {{x}} of {{y}}",
+                          {
+                            x: idx + 1,
+                            y: total,
+                          }
+                        )}
+                      >
+                        <Card className="overflow-hidden h-full">
+                          <div className="aspect-[4/3]">
+                            <img
+                              src={g.image || ""}
+                              alt={g.title}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                          <div className="p-4">
+                            <p className="text-sm font-semibold text-[var(--accent)]">
+                              {g.title}
+                            </p>
+                          </div>
+                        </Card>
+                      </div>
+                    ))}
+                  </div>
+                </m.div>
               </div>
             </div>
-          </div>
-        ) : null}
-      </FetchHandler>
-    </section>
+          ) : null}
+        </FetchHandler>
+      </m.section>
+    </LazyMotion>
   );
 };
 

@@ -1,17 +1,9 @@
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SuccessStoriesSliderSkeleton: React.FC = () => {
-  const shouldReduceMotion = useReducedMotion();
-
-  const initial = shouldReduceMotion
-    ? { opacity: 1, y: 0 }
-    : { opacity: 0, y: 16 };
-
-  const animate = { opacity: 1, y: 0 };
-
-  const items = Array.from({ length: 5 }); // عدد كروت السكيلتون
+  const shimmer = "motion-safe:animate-pulse";
+  const items = Array.from({ length: 5 });
 
   return (
     <section
@@ -28,18 +20,18 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
         <div className="flex items-center justify-between gap-4">
           <div className="space-y-1">
             <div
-              className="
+              className={`
                 h-4 md:h-5 w-44 md:w-56 rounded-md
                 bg-[color:var(--border-subtle)]
-                animate-pulse
-              "
+                ${shimmer}
+              `}
             />
             <div
-              className="
+              className={`
                 h-3 w-72 md:w-96 rounded-md
                 bg-[color:var(--border-subtle)]
-                animate-pulse
-              "
+                ${shimmer}
+              `}
             />
           </div>
 
@@ -47,6 +39,7 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
             <button
               type="button"
               disabled
+              aria-label="Previous story"
               className="
                 inline-flex items-center justify-center
                 h-8 w-8 rounded-full
@@ -55,13 +48,14 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
                 text-[color:var(--text-main)]
                 opacity-60 cursor-not-allowed
               "
-              aria-label="Previous story"
             >
-              <IoChevronBack aria-hidden="true" />
+              <ChevronLeft aria-hidden="true" />
             </button>
+
             <button
               type="button"
               disabled
+              aria-label="Next story"
               className="
                 inline-flex items-center justify-center
                 h-8 w-8 rounded-full
@@ -70,18 +64,14 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
                 text-[color:var(--text-main)]
                 opacity-60 cursor-not-allowed
               "
-              aria-label="Next story"
             >
-              <IoChevronForward aria-hidden="true" />
+              <ChevronRight aria-hidden="true" />
             </button>
           </div>
         </div>
 
         {/* Slider */}
-        <motion.div
-          initial={initial}
-          animate={animate}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+        <div
           className="
             flex gap-4 md:gap-5
             overflow-x-auto
@@ -99,7 +89,7 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
               role="listitem"
               className="snap-center min-w-[260px] md:min-w-[320px] mx-2"
             >
-              {/* Skeleton Card (بديل SuccessStoryCard) */}
+              {/* Skeleton Card */}
               <div
                 className="
                   rounded-2xl
@@ -110,66 +100,75 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
                   space-y-3
                 "
               >
-                {/* top row: avatar + name */}
+                {/* top row */}
                 <div className="flex items-center gap-3">
                   <div
-                    className="
+                    className={`
                       h-10 w-10 rounded-full
                       bg-[color:var(--border-subtle)]
-                      animate-pulse
-                    "
+                      ${shimmer}
+                    `}
                   />
                   <div className="space-y-1 flex-1">
                     <div
-                      className="
+                      className={`
                         h-3.5 w-32 rounded-md
                         bg-[color:var(--border-subtle)]
-                        animate-pulse
-                      "
+                        ${shimmer}
+                      `}
                     />
                     <div
-                      className="
+                      className={`
                         h-3 w-24 rounded-md
                         bg-[color:var(--border-subtle)]
-                        animate-pulse
-                      "
+                        ${shimmer}
+                      `}
                     />
                   </div>
-                  {/* active badge placeholder */}
                   <div
-                    className="
+                    className={`
                       h-6 w-16 rounded-full
                       bg-[color:var(--border-subtle)]
-                      animate-pulse
-                    "
+                      ${shimmer}
+                    `}
                   />
                 </div>
 
                 {/* title */}
                 <div
-                  className="
+                  className={`
                     h-4 w-40 rounded-md
                     bg-[color:var(--border-subtle)]
-                    animate-pulse
-                  "
+                    ${shimmer}
+                  `}
                 />
 
-                {/* text lines */}
+                {/* text */}
                 <div className="space-y-2">
-                  <div className="h-3 w-full rounded-md bg-[color:var(--border-subtle)] animate-pulse" />
-                  <div className="h-3 w-[92%] rounded-md bg-[color:var(--border-subtle)] animate-pulse" />
-                  <div className="h-3 w-[80%] rounded-md bg-[color:var(--border-subtle)] animate-pulse" />
+                  <div
+                    className={`h-3 w-full rounded-md bg-[color:var(--border-subtle)] ${shimmer}`}
+                  />
+                  <div
+                    className={`h-3 w-[92%] rounded-md bg-[color:var(--border-subtle)] ${shimmer}`}
+                  />
+                  <div
+                    className={`h-3 w-[80%] rounded-md bg-[color:var(--border-subtle)] ${shimmer}`}
+                  />
                 </div>
 
-                {/* footer row */}
+                {/* footer */}
                 <div className="pt-2 flex items-center justify-between">
-                  <div className="h-3 w-24 rounded-md bg-[color:var(--border-subtle)] animate-pulse" />
-                  <div className="h-8 w-24 rounded-full bg-[color:var(--border-subtle)] animate-pulse" />
+                  <div
+                    className={`h-3 w-24 rounded-md bg-[color:var(--border-subtle)] ${shimmer}`}
+                  />
+                  <div
+                    className={`h-8 w-24 rounded-full bg-[color:var(--border-subtle)] ${shimmer}`}
+                  />
                 </div>
               </div>
             </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Bullets */}
         <div
@@ -177,15 +176,15 @@ const SuccessStoriesSliderSkeleton: React.FC = () => {
           role="tablist"
           aria-label="Select patient story"
         >
-          {Array.from({ length: 5 }).map((_, idx) => (
+          {items.map((_, idx) => (
             <span
               key={idx}
-              className="
+              aria-hidden="true"
+              className={`
                 h-2 w-4 rounded-full
                 bg-[color:var(--border-subtle)]
-                animate-pulse
-              "
-              aria-hidden="true"
+                ${shimmer}
+              `}
             />
           ))}
         </div>
