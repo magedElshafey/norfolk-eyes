@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Axios } from "@/lib/axios/Axios";
 import { apiRoutes } from "@/services/api-routes/apiRoutes";
-import type { VisionConfig } from "../data/data";
+import { VisionConfig } from "../types/vision.types";
 const useGetVisionSimulatorConfig = () => {
   return useQuery({
     queryKey: [apiRoutes?.visionSimulator],
