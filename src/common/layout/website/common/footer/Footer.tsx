@@ -9,8 +9,8 @@ import {
 import { FaXTwitter } from "react-icons/fa6";
 import Logo from "@/common/components/logo/Logo";
 import { Setting } from "@/features/settings/types/settings.type";
-import useGetFeaturedProcedures from "@/features/producers/api/useGetFeaturedProcedures";
-import useGetSimpleBlogs from "@/features/blogs/api/useGetSimpleBlogs";
+// import useGetFeaturedProcedures from "@/features/producers/api/useGetFeaturedProcedures";
+// import useGetSimpleBlogs from "@/features/blogs/api/useGetSimpleBlogs";
 import { openCookieSettings } from "@/features/cookies/CookieConsentProvider";
 type FooterProps = Pick<
   Setting,
@@ -30,8 +30,8 @@ type FooterProps = Pick<
 
 export default function Footer(props: FooterProps) {
   const { t } = useTranslation();
-  const { data: procedures, isLoading } = useGetFeaturedProcedures();
-  const { data: blogs, isLoading: loadingBlogs } = useGetSimpleBlogs();
+  // const { data: procedures, isLoading } = useGetFeaturedProcedures();
+  // const { data: blogs, isLoading: loadingBlogs } = useGetSimpleBlogs();
   const POLICY_LINKS: { label: string; href: string }[] = [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Cookies Policy", href: "/cookies" },
@@ -43,7 +43,7 @@ export default function Footer(props: FooterProps) {
       <div
         className="
         mt-10
-        pt-12 pb-6
+        py-8
         bg-[var(--footer-bg)]
         text-[var(--footer-text)]
         transition-colors duration-300
@@ -52,7 +52,7 @@ export default function Footer(props: FooterProps) {
         <div
           className="
           containerr
-          grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-6
+          grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4   gap-6
           text-sm
           leading-[calc(1.6*var(--a11y-line-height-scale))]
         "
@@ -171,7 +171,7 @@ export default function Footer(props: FooterProps) {
                   to="/"
                   className="
                   hover:text-[color:var(--footer-link-hover)]
-                  text-[color:var(--footer-link)]
+                  text-[color:var(--footer-link)] duration-200 transition hover:underline
                 "
                 >
                   {t("Navbar.Home")}
@@ -182,7 +182,7 @@ export default function Footer(props: FooterProps) {
                   to="/about-us"
                   className="
                   hover:text-[color:var(--footer-link-hover)]
-                  text-[color:var(--footer-link)]
+                  text-[color:var(--footer-link)] duration-200 transition hover:underline
                 "
                 >
                   {t("Navbar.About")}
@@ -193,7 +193,7 @@ export default function Footer(props: FooterProps) {
                   to="/contact-us"
                   className="
                   hover:text-[color:var(--footer-link-hover)]
-                  text-[color:var(--footer-link)]
+                  text-[color:var(--footer-link)] duration-200 transition hover:underline
                 "
                 >
                   {t("Navbar.contact us")}
@@ -204,7 +204,7 @@ export default function Footer(props: FooterProps) {
                   to="/vision-simulator"
                   className="
                   hover:text-[color:var(--footer-link-hover)]
-                  text-[color:var(--footer-link)]
+                  text-[color:var(--footer-link)] duration-200 transition hover:underline
                 "
                 >
                   {t("Navbar.vision simulator")}
@@ -212,9 +212,41 @@ export default function Footer(props: FooterProps) {
               </li>
             </ul>
           </div>
+          <div>
+            <h2 className="text-[color:var(--footer-heading)]  font-bold  mb-4 tracking-wide uppercase">
+              {t("policies")}
+            </h2>
 
+            <ul className="space-y-2 text-sm">
+              {POLICY_LINKS.map((item) => (
+                <li key={item?.href}>
+                  <Link
+                    to="/"
+                    className="
+                  hover:text-[color:var(--footer-link-hover)]
+                  text-[color:var(--footer-link)] duration-200 transition hover:underline
+                "
+                  >
+                    {t(item?.label)}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={openCookieSettings}
+                  className="
+                  hover:text-[color:var(--footer-link-hover)]
+                  text-[color:var(--footer-link)] duration-200 transition hover:underline
+                "
+                >
+                  {t("Cookie settings")}
+                </button>
+              </li>
+            </ul>
+          </div>
           {/* Procedures */}
-          {!isLoading && procedures && procedures?.length > 1 && (
+          {/* {!isLoading && procedures && procedures?.length > 1 && (
             <div>
               <h2 className="text-[color:var(--footer-heading)] font-bold mb-4 tracking-wide uppercase">
                 {t("Navbar.Procedures")}
@@ -236,9 +268,8 @@ export default function Footer(props: FooterProps) {
                 ))}
               </ul>
             </div>
-          )}
-          {/* Procedures */}
-          {!loadingBlogs && blogs && blogs?.length > 1 && (
+          )} */}
+          {/* {!loadingBlogs && blogs && blogs?.length > 1 && (
             <div>
               <h2 className="text-[color:var(--footer-heading)] font-bold mb-4 tracking-wide uppercase">
                 {t("Navbar.patient education")}
@@ -260,7 +291,7 @@ export default function Footer(props: FooterProps) {
                 ))}
               </ul>
             </div>
-          )}
+          )} */}
           {/* Contact */}
           <div>
             <h2 className="text-[color:var(--footer-heading)]  font-bold mb-4 tracking-wide uppercase">
@@ -304,53 +335,11 @@ export default function Footer(props: FooterProps) {
             </ul>
           </div>
         </div>
-      </div>
-      <div className="bg-[var(--bg-page)]">
-        <div className="containerr py-4 flex items-center">
-          <div className="w-full flex items-center justify-between flex-col md:flex-row gap-3 text-xs">
-            <div>
-              {/* © 2025 Eye Clinic —{" "} */}
-              {props?.copyright_text}
-            </div>
-            <div className="flex flex-wrap items-center gap-3 md:justify-end">
-              {/* Small pills for policies */}
-              <ul className="flex flex-wrap items-center gap-2 text-xs">
-                {POLICY_LINKS.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      to={item.href}
-                      className="
-                      inline-flex items-center rounded-pill
-                      border border-[var(--border-subtle)]
-                      px-3 py-1 transition-all duration-300
-                      text-[11px] text-[var(--text-muted)]
-                      hover:text-[var(--bg-page)] hover:bg-[var(--primary-green)]
-                      focus-visible:outline-none focus-visible:ring-2
-                      focus-visible:ring-primary focus-visible:ring-offset-2
-                      focus-visible:ring-offset-bg-surface
-                    "
-                    >
-                      {t(item.label)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={openCookieSettings}
-                className="
-    inline-flex items-center rounded-pill  border border-[var(--border-subtle)]
-    px-3 py-1 text-[11px] text-[var(--text-muted)]
-   hover:text-[var(--bg-page)] hover:bg-[var(--primary-green)]
-    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
-    focus-visible:ring-offset-2 focus-visible:ring-offset-bg-surface
-  "
-              >
-                {t("Cookie settings")}
-              </button>
-            </div>
+        {props?.copyright_text && (
+          <div className="w-full flex items-center justify-center py-3">
+            {props?.copyright_text}
           </div>
-        </div>
+        )}
       </div>
     </footer>
   );

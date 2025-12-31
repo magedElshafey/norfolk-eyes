@@ -40,7 +40,7 @@ const Contact = () => {
 
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="w-full space-y-4"
+                  className="w-full space-y-4 !capitalize"
                   noValidate
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -10,7 +10,7 @@ interface Props {
 
 const ProcedureFaq: React.FC<Props> = ({ procedure }) => {
   const { t } = useTranslation();
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const sectionId = "procedure-faq";
 
   if (!procedure.faqs.length) return null;

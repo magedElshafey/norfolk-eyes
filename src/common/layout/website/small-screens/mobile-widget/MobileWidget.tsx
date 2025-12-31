@@ -2,9 +2,9 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import IconBadge from "./components/common/IconBadge";
 import { IoHomeOutline } from "react-icons/io5";
-import { TbCategoryPlus } from "react-icons/tb";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { SiBookstack } from "react-icons/si";
+import { FaProcedures } from "react-icons/fa";
 
 import ProcedureSidebar from "./components/common/procedures-sidebar/ProceduresSidebar";
 import Sidebar from "../sidebar/Sidebar";
@@ -58,7 +58,7 @@ const MobileWidget = () => {
       },
       { Icon: IoHomeOutline, title: "Home", onClick: homeAction },
       {
-        Icon: TbCategoryPlus,
+        Icon: FaProcedures,
         title: "Procedures",
         onClick: openProcedureSidebar,
       },

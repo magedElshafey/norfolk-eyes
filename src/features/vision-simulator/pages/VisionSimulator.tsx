@@ -25,7 +25,7 @@ const VisionSimulator: React.FC = () => {
   const conditions = config?.conditions ?? [];
   const lenses = config?.lenses ?? [];
 
-  // safe defaults after data arrives
+  // selections
   const [sceneId, setSceneId] = useState<VisionSceneId | null>(null);
   const [conditionId, setConditionId] = useState<VisionConditionId | null>(
     null
@@ -36,7 +36,7 @@ const VisionSimulator: React.FC = () => {
   const [enableLensCompare, setEnableLensCompare] = useState(false);
   const [compareLens, setCompareLens] = useState<LensId | null>(null);
 
-  // initialize selections when API data is ready
+  // init defaults when data ready
   useEffect(() => {
     if (!scenes.length || !conditions.length || !lenses.length) return;
 
@@ -46,18 +46,17 @@ const VisionSimulator: React.FC = () => {
   }, [scenes, conditions, lenses]);
 
   const scene = useMemo(() => {
-    if (!scenes.length || !sceneId) return null;
+    if (!sceneId) return null;
     return scenes.find((s) => s.id === sceneId) ?? scenes[0] ?? null;
   }, [scenes, sceneId]);
 
-  // auto choose compare lens when compare enabled
+  // auto choose compare lens
   useEffect(() => {
-    if (!enableLensCompare) return;
-    if (!primaryLens) return;
-
+    if (!enableLensCompare || !primaryLens) return;
     if (compareLens && compareLens !== primaryLens) return;
 
     const firstDifferent = lenses.find((l) => l.id !== primaryLens)?.id ?? null;
+
     setCompareLens(firstDifferent);
   }, [enableLensCompare, primaryLens, compareLens, lenses]);
 
@@ -70,39 +69,27 @@ const VisionSimulator: React.FC = () => {
     setCompareLens(null);
   };
 
-  const onRetry = () => {
-    query.refetch();
-  };
-
+  const onRetry = () => query.refetch();
   const isRetrying = query.isFetching;
+
+  const hasMissingData = !scenes.length || !conditions.length || !lenses.length;
 
   return (
     <FetchHandler queryResult={query} skeletonType="vision-simulator">
-      {/* ✅ 1) لو backend قافل السكشن */}
-      {config && config.is_active === false ? (
-        <VisionEmptyState
-          variant="inactive"
-          onRetry={onRetry}
-          isRetrying={isRetrying}
-        />
-      ) : /* ✅ 2) لو الداتا ناقصة */ config &&
-        config.is_active === true &&
-        (!scenes.length || !conditions.length || !lenses.length) ? (
-        <VisionEmptyState
-          variant="missing"
-          onRetry={onRetry}
-          isRetrying={isRetrying}
-        />
-      ) : /* ✅ 3) لو في error */ query.isError ? (
+      {/* ❌ Error */}
+      {query.isError ? (
         <VisionEmptyState
           variant="error"
           onRetry={onRetry}
           isRetrying={isRetrying}
         />
-      ) : /* ✅ 4) الحالة الطبيعية */ config?.is_active &&
-        scene &&
-        sceneId &&
-        conditionId ? (
+      ) : /* ❌ Missing data */ config && hasMissingData ? (
+        <VisionEmptyState
+          variant="missing"
+          onRetry={onRetry}
+          isRetrying={isRetrying}
+        />
+      ) : /* ✅ Normal state */ scene && sceneId && conditionId ? (
         <section
           id="vision-simulator"
           className="containerr py-8 md:py-10 lg:py-12"
@@ -120,7 +107,7 @@ const VisionSimulator: React.FC = () => {
                 )}
                 options={scenes}
                 selectedId={sceneId}
-                onChange={(id) => setSceneId(id)}
+                onChange={setSceneId}
               />
 
               <OptionSelector
@@ -132,22 +119,22 @@ const VisionSimulator: React.FC = () => {
                 )}
                 options={conditions}
                 selectedId={conditionId}
-                onChange={(id) => setConditionId(id)}
+                onChange={setConditionId}
               />
 
               <LensSelector
                 lenses={lenses}
                 primary={primaryLens}
-                onPrimaryChange={(id) => setPrimaryLens(id)}
+                onPrimaryChange={setPrimaryLens}
                 enableBeforeAfter={enableBeforeAfter}
-                onToggleBeforeAfter={(v) => setEnableBeforeAfter(v)}
+                onToggleBeforeAfter={setEnableBeforeAfter}
                 enableLensCompare={enableLensCompare}
-                onToggleLensCompare={(v) => setEnableLensCompare(v)}
+                onToggleLensCompare={setEnableLensCompare}
                 compareLens={compareLens}
-                onCompareChange={(id) => setCompareLens(id)}
+                onCompareChange={setCompareLens}
               />
 
-              <div className="flex items-center justify-center">
+              <div className="flex justify-center">
                 <MainBtn
                   type="button"
                   text={t("Vision.clear", "Clear")}
@@ -167,13 +154,14 @@ const VisionSimulator: React.FC = () => {
                 enableLensCompare={enableLensCompare}
                 compareLens={compareLens}
               />
-
-              <VisionSimulatorDisclaimer />
             </div>
+          </div>
+          <div className="mt-6 md:mt-7 lg:mt-8 xl:mt-9">
+            <VisionSimulatorDisclaimer />
           </div>
         </section>
       ) : (
-        // fallback لطيف لو config لسه null أو values مش ready
+        // fallback بسيط
         <VisionEmptyState
           variant="missing"
           onRetry={onRetry}

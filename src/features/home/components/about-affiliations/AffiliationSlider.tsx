@@ -277,16 +277,14 @@ function AffLogo({ item }: { item: Affiliation }) {
       {...(wrapperProps as any)}
       className="
         group w-full h-[54px] md:h-[60px]
-        inline-flex items-center justify-center
-        rounded-2xl
-        bg-[var(--card-bg,#FFFFFF)]
-        border border-[var(--card-border,#E5E7EB)]
-        shadow-sm
-        transition
-        hover:shadow-md hover:-translate-y-[1px]
-        focus:outline-none focus-visible:ring-2
-        focus-visible:ring-[var(--focus-ring,#0f766e)]
-        focus-visible:ring-offset-2
+  inline-flex items-center justify-center
+  rounded-2xl
+  bg-[var(--card-bg,#FFFFFF)]
+  border border-[var(--card-border,#E5E7EB)]
+ duration-200
+  transition
+  hover:shadow-xl 
+ 
       "
     >
       <img

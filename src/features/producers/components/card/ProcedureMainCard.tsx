@@ -68,15 +68,6 @@ const ProcedureMainCard: React.FC<Props> = ({
           transition-[box-shadow,transform] duration-200
           min-h-[190px]
         "
-        // ✅ hover transition جوّا whileHover (من غير transition prop إضافي)
-        whileHover={
-          hoverEnabled
-            ? {
-                y: -4,
-                transition: { type: "spring", stiffness: 260, damping: 24 },
-              }
-            : undefined
-        }
         whileTap={hoverEnabled ? { scale: 0.99 } : undefined}
       >
         {/* ================= HOVER DECORATION (BACKGROUND ONLY) ================= */}

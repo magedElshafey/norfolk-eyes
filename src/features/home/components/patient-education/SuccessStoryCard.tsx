@@ -52,18 +52,17 @@ const SuccessStoryCard: React.FC<Props> = ({ story }) => {
           bg-[var(--card-bg)]
           border border-[var(--card-border)]
           shadow-sm
-          overflow-hidden
+          
           backdrop-blur
           px-4 py-4 md:px-5 md:py-5
           flex flex-col
           focus-within:ring-2
           focus-within:ring-[color:var(--focus-ring)]
-          focus-within:ring-offset-2
+          focus-within:ring-offset-2 duration-200 hover:shadow-lg  
           focus-within:ring-offset-[color:var(--bg-subtle)]
         "
         aria-label={ariaLabel}
         aria-roledescription="Patient success story card"
-        whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.01 }}
         transition={shouldReduceMotion ? undefined : HOVER_SPRING}
       >
         {/* Header */}
