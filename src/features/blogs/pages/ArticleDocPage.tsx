@@ -51,54 +51,56 @@ const ArticleDocPage: React.FC<Props> = ({
   // toc offset css var
   useTocOffsetCssVar(query.data);
 
-  const isActive = Boolean(query?.data?.is_active);
+  // const isActive = Boolean(query?.data?.is_active);
 
-  if (!isActive) return null;
+  // if (!isActive) return null;
 
   return (
-    <FetchHandler queryResult={query} skeletonType={"blog"}>
-      {query.data ? (
-        <div>
-          <BlogHeader post={query.data} />
+    <FetchHandler queryResult={query} skeletonType="hero">
+      {query?.data?.is_active ? (
+        query.data ? (
+          <div>
+            <BlogHeader post={query.data} />
 
-          <main className="containerr py-10">
-            {showBackButton && (
-              <button onClick={() => navigate(-1)} className="mb-6 text-xs">
-                {i18n.language === "ar" ? "→" : "←"} {t("Back")}
-              </button>
-            )}
+            <main className="containerr py-10">
+              {showBackButton && (
+                <button onClick={() => navigate(-1)} className="mb-6 text-xs">
+                  {i18n.language === "ar" ? "→" : "←"} {t("Back")}
+                </button>
+              )}
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-              <article className="prose max-w-none bg-[var(--bg-hero)] border rounded-2xl p-6 col-span-4">
-                {sectionsWithIds.map((sec) => (
-                  <section
-                    key={sec._id}
-                    className="scroll-mt-[calc(var(--toc-offset)+16px)]"
-                  >
-                    <h2 id={sec._id} className="text-[var(--accent)]">
-                      {sec.heading}
-                    </h2>
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <article className="prose max-w-none bg-[var(--bg-hero)] border rounded-2xl p-6 col-span-4">
+                  {sectionsWithIds.map((sec) => (
+                    <section
+                      key={sec._id}
+                      className="scroll-mt-[calc(var(--toc-offset)+16px)]"
+                    >
+                      <h2 id={sec._id} className="text-[var(--accent)]">
+                        {sec.heading}
+                      </h2>
 
-                    <HtmlConverter
-                      html={sec.content}
-                      className="!text-[var(--text-soft)]"
-                      sanitize
-                    />
-                  </section>
-                ))}
-              </article>
+                      <HtmlConverter
+                        html={sec.content}
+                        className="!text-[var(--text-soft)]"
+                        sanitize
+                      />
+                    </section>
+                  ))}
+                </article>
 
-              {/* Sticky Aside */}
-              <aside className="hidden lg:block relative">
-                <div className="sticky top-48 z-20">
-                  <BlogAside tocItems={tocItems} activeId={activeId} />
-                </div>
-              </aside>
-            </div>
-          </main>
+                {/* Sticky Aside */}
+                <aside className="hidden lg:block relative">
+                  <div className="sticky top-48 z-20">
+                    <BlogAside tocItems={tocItems} activeId={activeId} />
+                  </div>
+                </aside>
+              </div>
+            </main>
 
-          <MobileToc tocItems={tocItems} activeId={activeId} />
-        </div>
+            <MobileToc tocItems={tocItems} activeId={activeId} />
+          </div>
+        ) : null
       ) : null}
     </FetchHandler>
   );

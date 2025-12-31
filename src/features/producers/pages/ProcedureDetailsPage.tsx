@@ -21,11 +21,8 @@ const ProcedureDetailsPage: React.FC = () => {
 
   return (
     <>
-      {queryResult?.data?.is_active ? (
-        <FetchHandler
-          queryResult={queryResult}
-          skeletonType="procedure-details"
-        >
+      <FetchHandler queryResult={queryResult} skeletonType="hero">
+        {queryResult?.data?.is_active ? (
           <main
             className="bg-[var(--bg-page)] text-[color:var(--section-body-color)]"
             aria-labelledby={queryResult?.data?.name || pageTitleId}
@@ -88,8 +85,8 @@ const ProcedureDetailsPage: React.FC = () => {
               </div>
             </section>
           </main>
-        </FetchHandler>
-      ) : null}
+        ) : null}
+      </FetchHandler>
     </>
   );
 };

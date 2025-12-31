@@ -50,19 +50,16 @@ const Blogs = () => {
         animate={animate}
         transition={transition}
       >
-        {queryResult?.data?.is_active ? (
-          <main
-            aria-labelledby={headingId}
-            className="
+        <FetchHandler queryResult={queryResult} skeletonType="blog">
+          {queryResult?.data?.is_active ? (
+            <main
+              aria-labelledby={headingId}
+              className="
               bg-[var(--bg-page)]
               border-b border-softGray/70
             "
-          >
-            <section className="containerr py-10 md:py-16 lg:py-20">
-              <FetchHandler
-                queryResult={queryResult}
-                skeletonType="patient-education-home-section"
-              >
+            >
+              <section className="containerr py-10 md:py-16 lg:py-20">
                 <div className="space-y-6 md:space-y-8">
                   {/* Header */}
                   <header className="space-y-3 max-w-3xl">
@@ -121,10 +118,10 @@ const Blogs = () => {
                       </section>
                     )}
                 </div>
-              </FetchHandler>
-            </section>
-          </main>
-        ) : null}
+              </section>
+            </main>
+          ) : null}
+        </FetchHandler>
       </m.section>
     </LazyMotion>
   );

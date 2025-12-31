@@ -221,7 +221,7 @@ export default function Footer(props: FooterProps) {
               {POLICY_LINKS.map((item) => (
                 <li key={item?.href}>
                   <Link
-                    to="/"
+                    to={item?.href}
                     className="
                   hover:text-[color:var(--footer-link-hover)]
                   text-[color:var(--footer-link)] duration-200 transition hover:underline

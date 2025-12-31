@@ -28,8 +28,8 @@ const BlogHeader: React.FC<{ post: Articles }> = ({ post }) => {
               </p>
             )}
           </div>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
               {post.author?.image && (
                 <MetaItem>
                   <img alt={post?.author?.name} src={post?.author?.image} />
@@ -37,13 +37,16 @@ const BlogHeader: React.FC<{ post: Articles }> = ({ post }) => {
               )}
               {post.author?.name && (
                 <MetaItem>
-                  {t("Blog.by", "By")} {post.author.name}
+                  <span className="font-bold text-xl">
+                    {" "}
+                    {t("Blog.by", "By")}: {post.author.name}
+                  </span>
                 </MetaItem>
               )}
             </div>
-            <p className="text-sm text-[var(--text-muted)]">
+            <span className="text-xs text-[var(--text-muted)]">
               {post?.author?.affiliation}
-            </p>
+            </span>
             {post.published_at && (
               <MetaItem>
                 <time dateTime={formatDate(post.published_at)}>
