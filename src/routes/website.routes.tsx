@@ -28,6 +28,14 @@ export const websiteRoutes: RouteObject = {
       },
     },
     {
+      path: "submit-review",
+      element: lazyLoad(() => import("../features/submit-review/pages/Review")),
+
+      handle: {
+        breadcrumb: "submit-review",
+      },
+    },
+    {
       path: "privacy",
       element: lazyLoad(() => import("../features/policies/pages/PrivacyPage")),
 

@@ -56,5 +56,7 @@ export const apiRoutes = {
   workGallery: "/content/clinicWorkGallery",
   visionDisc: "/content/vision-info",
   contactIntro: "/content/contact-intro",
-  preVisitIntro: "/content/pre-visit-intro"
+  preVisitIntro: "/content/pre-visit-intro",
+  submitReview: "reviews",
+  reviewIntro: "/content/review-intro"
 };

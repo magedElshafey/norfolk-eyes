@@ -29,7 +29,7 @@ const ProcedureKeyFacts: React.FC<Props> = ({ features }) => {
           "
         >
           <p className="text-[11px] md:text-xs text-[color:var(--text-muted)] mb-1">
-            {t("Procedure.duration", "Procedure time")}
+            {t("Procedure Duration")}
           </p>
           <p className="text-sm md:text-base font-semibold text-[var(--text-primary-green)]">
             {features.duration_minutes}
@@ -46,7 +46,7 @@ const ProcedureKeyFacts: React.FC<Props> = ({ features }) => {
           "
         >
           <p className="text-[11px] md:text-xs text-[color:var(--text-muted)] mb-1">
-            {t("Procedure.anaesthesia", "Anaesthesia")}
+            {t("Type of Anaesthesia")}
           </p>
           <p className="text-sm md:text-base font-semibold text-[var(--text-primary-green)]">
             {features.anesthesia}
@@ -63,7 +63,7 @@ const ProcedureKeyFacts: React.FC<Props> = ({ features }) => {
           "
         >
           <p className="text-[11px] md:text-xs text-[color:var(--text-muted)] mb-1">
-            {t("Procedure.recovery", "Typical recovery")}
+            {t("Recovery time")}
           </p>
           <p className="text-sm md:text-base font-semibold text-[var(--text-primary-green)]">
             {features.recovery_days}
@@ -80,7 +80,7 @@ const ProcedureKeyFacts: React.FC<Props> = ({ features }) => {
           "
         >
           <p className="text-[11px] md:text-xs text-[color:var(--text-muted)] mb-1">
-            {t("Procedure.eyeSide", "Eye(s) treated")}
+            {t("Follow up")}
           </p>
           <p className="text-sm md:text-base font-semibold text-[var(--text-primary-green)]">
             {features.is_eyelid_treated}

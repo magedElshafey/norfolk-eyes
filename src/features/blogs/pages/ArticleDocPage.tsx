@@ -68,8 +68,8 @@ const ArticleDocPage: React.FC<Props> = ({
               </button>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <article className="prose max-w-none bg-[var(--bg-hero)] border rounded-2xl p-6 col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              <article className="prose max-w-none bg-[var(--bg-hero)] border rounded-2xl p-6 col-span-4">
                 {sectionsWithIds.map((sec) => (
                   <section
                     key={sec._id}
