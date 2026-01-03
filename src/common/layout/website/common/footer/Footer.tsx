@@ -24,6 +24,8 @@ import { openCookieSettings } from "@/features/cookies/CookieConsentProvider";
 
 // ✅ Your button
 import BookConsultationButton from "@/common/components/buttons/book-consultation-button/BookConsultationButton";
+import FooterMapCard from "./FooterMapCard";
+import useGetContactDetails from "@/features/home/api/useGetContactDetails";
 type FooterProps = Pick<
   Setting,
   | "app_logo"
@@ -38,6 +40,7 @@ type FooterProps = Pick<
   | "social_youtube"
   | "copyright_text"
   | "business_hours"
+  | "google_map_url"
 >;
 
 const BulletLink = ({
@@ -138,7 +141,7 @@ export default function Footer(props: FooterProps) {
       label: "linkedin",
     },
   ].filter((x) => Boolean(x.href));
-
+  const { data } = useGetContactDetails();
   return (
     <footer className="mt-10">
       <div
@@ -369,6 +372,7 @@ export default function Footer(props: FooterProps) {
                       </div>
                     </div>
                   ) : null}
+                  <FooterMapCard mapUrl={data?.map_info?.google_map_url} />
                 </div>
               </div>
               {/* Social pills */}

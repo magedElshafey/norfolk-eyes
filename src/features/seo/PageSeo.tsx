@@ -30,7 +30,7 @@ export interface PageSeoProps {
   structuredData?: Record<string, any> | Record<string, any>[];
   /** hreflang alternates للصفحات متعددة اللغات */
   langAlternates?: LangAlternate[];
-  fav: string;
+  fav?: string;
 }
 
 const PageSeo: React.FC<PageSeoProps> = ({

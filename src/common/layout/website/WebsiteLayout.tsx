@@ -35,6 +35,7 @@ const WebsiteLayout = () => {
       // addressLocality: data.contact_address.city,
       addressCountry: "UK", // أو UK أو حسب الـ project
     },
+    fav,
     sameAs: [
       data.social_facebook,
       data.social_instagram,
@@ -43,11 +44,13 @@ const WebsiteLayout = () => {
       data.social_twitter,
     ].filter(Boolean),
   };
-
+  console.log("settings ", data);
   return (
     <div id="app-shell" className="flex min-h-screen flex-col">
       {/* 👇 نحط الـ PageSeo هنا عشان الـ org schema + الdefaults */}
-      {!isLoading && clinicSchema && <PageSeo structuredData={clinicSchema} />}
+      {!isLoading && clinicSchema && (
+        <PageSeo structuredData={clinicSchema} fav={fav || ""} />
+      )}
 
       {isLoading ? (
         <NavbarSkeleton />
@@ -94,6 +97,7 @@ const WebsiteLayout = () => {
           social_youtube={data?.social_youtube || ""}
           copyright_text={data?.copyright_text || ""}
           business_hours={data?.business_hours || ""}
+          google_map_url={data?.google_map_url || ""}
         />
       )}
       <CookieBanner />
