@@ -5,6 +5,7 @@ import AcheivementSection from "../components/AceivementSection";
 import WorkGallery from "../components/WorkGallery";
 import MainBtn from "@/common/components/buttons/MainBtn";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 export default function AboutUsPage() {
   const { t } = useTranslation();
   return (
@@ -37,9 +38,9 @@ export default function AboutUsPage() {
             </p>
           </div>
 
-          <a className="inline-block w-fit mt-4" href="https://www.google.com">
+          <Link className="inline-block w-fit mt-4" to="/submit-review">
             <MainBtn text="submit review" theme="outline" />
-          </a>
+          </Link>
         </div>
       </div>
     </>

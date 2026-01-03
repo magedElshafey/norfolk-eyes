@@ -15,7 +15,7 @@ import CookieBanner from "@/features/cookies/CookieBanner";
 const WebsiteLayout = () => {
   const { data, isLoading } = useGetWebsiteSettings();
   const logo = data?.app_logo;
-
+  const fav = data?.app_favicon;
   const clinicSchema = data && {
     "@context": "https://schema.org",
     "@type": "MedicalClinic",

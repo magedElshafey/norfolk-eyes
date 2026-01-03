@@ -26,6 +26,7 @@ import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { useLanguage } from "@/store/LanguageProvider";
 import MainBtn from "@/common/components/buttons/MainBtn";
 import BookConsultationButton from "@/common/components/buttons/book-consultation-button/BookConsultationButton";
+import { Link } from "react-router-dom";
 
 /* ---------------------------- Helpers ---------------------------- */
 
@@ -388,13 +389,7 @@ const SuccessStoriesSlider: React.FC = () => {
               {/* CTA */}
               <div className="w-full flex justify-center md:justify-end items-center flex-wrap gap-3">
                 <MainBtn theme="secondary">
-                  <a
-                    href="https://www.google.com"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    {t("submit review")}
-                  </a>
+                  <Link to="/submit-review">{t("submit review")}</Link>
                 </MainBtn>
                 <BookConsultationButton />
               </div>

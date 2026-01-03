@@ -1,6 +1,6 @@
 import PageSeo from "@/features/seo/PageSeo";
 import AboutAffiliationsPreviewSection from "../components/about-affiliations/AboutAffiliationsPreviewSection";
-import HomeContact from "../components/contact-details/HomeContact";
+// import HomeContact from "../components/contact-details/HomeContact";
 import FaqSection from "../components/faq/FaqSection";
 import HomeHero from "../components/hero/HomeHero";
 import PatientEducationSection from "../components/patient-education/PatientEducationSection";
@@ -42,7 +42,6 @@ const Home = () => {
       <PreparingForVisitSection />
       <FaqSection />
       <SuccessStoriesSlider />
-      <HomeContact />
     </>
   );
 };

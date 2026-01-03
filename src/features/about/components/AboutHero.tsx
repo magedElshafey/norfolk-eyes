@@ -8,6 +8,7 @@ import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
 const AboutHero = () => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const queryResult = useGetAboutHero();
+  console.log("q about", queryResult?.data);
   return (
     <div ref={sectionRef}>
       <FetchHandler queryResult={queryResult} skeletonType="hero">

@@ -4,17 +4,14 @@ import MainTextArea from "@/common/components/inputs/MainTextArea";
 import useContactusLogic from "../logic/useContactusLogic";
 import { useTranslation } from "react-i18next";
 import SectionTitle from "@/common/components/sections/SectionTitle";
-import useGetContactDetails from "@/features/home/api/useGetContactDetails";
 import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
 import SectionDescription from "@/common/components/sections/SectionDescription";
 import useGetContactIntro from "../api/useGetContactIntro";
 const Contact = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { register, errors, handleSubmit, onSubmit, isPending } =
     useContactusLogic();
-  const queryResult = useGetContactDetails();
   const query = useGetContactIntro();
-  const isRTL = i18n.dir() === "rtl";
   return (
     <main
       aria-label={t("Contact.pageAria", "Contact us page")}
@@ -151,87 +148,6 @@ const Contact = () => {
               </div>
             </div>
           ) : null}
-        </FetchHandler>
-
-        <FetchHandler queryResult={queryResult} skeletonType="contact-section">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 my-8">
-            <div className="w-full h-[260px] md:h-[320px] lg:h-[460px] bg-[color:var(--bg-surface)]">
-              {/* 🔁 استبدل الـ src برابط Google Maps الحقيقي بتاع العيادة */}
-              <iframe
-                title={t(
-                  "HomeContact.mapIframeTitle",
-                  "Clinic location on Google Maps"
-                )}
-                src={queryResult?.data?.map_info?.google_map_url}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full border-0"
-              />
-            </div>
-            {/* Contact info */}
-            <section
-              aria-labelledby="contact-info-heading"
-              className={`
-              rounded-2xl bg-[var(--card-bg)] border border-softGray/60 p-4 md:p-6 lg:p-7 shadow-sm
-              ${
-                isRTL
-                  ? "md:border-r-4 md:border-l-0"
-                  : "md:border-l-4 md:border-r-0"
-              }
-              border-[var(--field-focus-border)]
-            `}
-            >
-              <SectionTitle
-                as="h3"
-                id="contact-info-heading"
-                text={queryResult?.data?.section?.heading || ""}
-              />
-
-              <div className="mt-4 space-y-4 text-sm md:text-base text-[var(--text-soft)]">
-                {queryResult?.data?.contact_info?.clinic_address && (
-                  <div>
-                    <p className="font-semibold">{t("Clinic address")}</p>
-                    <p className="mt-0.5">
-                      {queryResult?.data?.contact_info?.clinic_address}
-                    </p>
-                  </div>
-                )}
-
-                {queryResult?.data?.contact_info?.clinic_email && (
-                  <div>
-                    <p className="font-semibold">{t("email")}</p>
-                    <a
-                      href={`mailto:${queryResult?.data?.contact_info?.clinic_email}`}
-                      className="mt-0.5 inline-block lowercase hover:underline"
-                    >
-                      {queryResult?.data?.contact_info?.clinic_email}
-                    </a>
-                  </div>
-                )}
-
-                {queryResult?.data?.contact_info?.clinic_phone && (
-                  <div>
-                    <p className="font-semibold">{t("phone")}</p>
-                    <a
-                      dir="ltr"
-                      href={`https://wa.me/${queryResult?.data?.contact_info?.clinic_phone}`}
-                      className="mt-0.5 inline-block hover:underline"
-                    >
-                      {queryResult?.data?.contact_info?.clinic_phone}
-                    </a>
-                  </div>
-                )}
-                {queryResult?.data?.contact_info?.opening_hours && (
-                  <div>
-                    <p className="font-semibold">{t("Opening hours")}</p>
-                    <p className="mt-0.5 inline-block hover:underline">
-                      {queryResult?.data?.contact_info?.opening_hours}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
         </FetchHandler>
       </div>
     </main>

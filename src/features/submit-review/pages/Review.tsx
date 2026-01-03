@@ -60,7 +60,6 @@ const Review = () => {
   } = useReviewLogic();
 
   const introQuery = useGetReviewIntro();
-  const hasIntro = Boolean(introQuery?.data?.is_active);
 
   const ui = useMemo(() => {
     const heading = introQuery?.data?.section?.heading || t("Write a review");
@@ -86,146 +85,145 @@ const Review = () => {
       >
         <div className="containerr py-8 md:py-10 lg:py-12">
           <FetchHandler queryResult={introQuery} skeletonType="hero">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-              {/* Form Card */}
-              <section
-                aria-labelledby="review-form-heading"
-                className="
-                  lg:col-span-7
+            {/* Form Card */}
+            <section
+              aria-labelledby="review-form-heading"
+              className="
+                 w-full mx-auto
                   rounded-3xl
                   bg-[var(--card-bg)]
                   border border-softGray/60
                   shadow-sm
                   overflow-hidden
                 "
-                style={cardAccentStyle}
+              style={cardAccentStyle}
+            >
+              {/* Header */}
+              <div className="p-5 md:p-6 lg:p-7 border-b border-[color:var(--field-border)]/60">
+                <SectionTitle
+                  as="h2"
+                  id="review-form-heading"
+                  text={ui.heading}
+                />
+                <SectionDescription description={ui.description} />
+              </div>
+
+              {/* Body */}
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                noValidate
+                className="p-5 md:p-6 lg:p-7 space-y-5 !capitalize"
               >
-                {/* Header */}
-                <div className="p-5 md:p-6 lg:p-7 border-b border-[color:var(--field-border)]/60">
-                  <SectionTitle
-                    as="h2"
-                    id="review-form-heading"
-                    text={ui.heading}
-                  />
-                  <SectionDescription description={ui.description} />
-                </div>
+                {/* Rating */}
+                <fieldset className="space-y-2">
+                  {/* <legend className="text-sm md:text-base font-medium text-[var(--text)]">
+                    {t("rate")}
+                    <span className="ms-1 text-[var(--field-error-text)]">
+                      *
+                    </span>
+                  </legend> */}
 
-                {/* Body */}
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  noValidate
-                  className="p-5 md:p-6 lg:p-7 space-y-5 !capitalize"
-                >
-                  {/* Rating */}
-                  <fieldset className="space-y-2">
-                    <legend className="text-sm md:text-base font-medium text-[var(--text)]">
-                      {t("rate")}
-                      <span className="ms-1 text-[var(--field-error-text)]">
-                        *
-                      </span>
-                    </legend>
-
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <StarRating
-                        value={rating}
-                        onChange={onSelectRating}
-                        disabled={isPending}
-                        size="md"
-                        ariaLabel={t("rate")}
-                        dir={isRTL ? "rtl" : "ltr"} // ✅ direction-aware stagger
-                      />
-
-                      <span className="text-xs text-[var(--text-soft)]">
-                        {rating
-                          ? `${t("Selected")}: ${rating}/5`
-                          : t("Choose a rating")}
-                      </span>
-                    </div>
-
-                    <AnimatePresence>
-                      {errors.rating?.message ? (
-                        <FieldError message={errors.rating.message as any} />
-                      ) : null}
-                    </AnimatePresence>
-
-                    <input
-                      type="hidden"
-                      {...register("rating", { valueAsNumber: true })}
+                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                    <StarRating
+                      value={rating}
+                      onChange={onSelectRating}
+                      disabled={isPending}
+                      size="md"
+                      ariaLabel={t("rate")}
+                      dir={isRTL ? "rtl" : "ltr"} // ✅ direction-aware stagger
                     />
-                  </fieldset>
 
-                  {/* Fields / Hint */}
-                  <AnimatePresence mode="popLayout">
-                    {showFields ? (
-                      <m.div
-                        key="fields"
-                        initial={reduceMotion ? false : { opacity: 0 }}
-                        animate={reduceMotion ? undefined : { opacity: 1 }}
-                        exit={reduceMotion ? undefined : { opacity: 0 }}
-                        transition={
-                          reduceMotion
-                            ? undefined
-                            : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
-                        }
-                        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                      >
-                        <div className="md:col-span-1">
-                          <MainInput
-                            required
-                            placeholder="full name"
-                            label="full name"
-                            enableAutocomplete
-                            storageKey="review_full_name"
-                            {...register("user_name")}
-                            error={errors.user_name?.message}
-                          />
-                        </div>
+                    {/* <span className="text-xs text-[var(--text-soft)]">
+                      {rating
+                        ? `${t("Selected")}: ${rating}/5`
+                        : t("Choose a rating")}
+                    </span> */}
+                  </div>
 
-                        <div className="md:col-span-1">
-                          <MainInput
-                            placeholder="job title"
-                            label="job title"
-                            enableAutocomplete
-                            storageKey="review_job_title"
-                            {...register("title")}
-                            error={errors.title?.message}
-                          />
-                        </div>
+                  <AnimatePresence>
+                    {errors.rating?.message ? (
+                      <FieldError message={errors.rating.message as any} />
+                    ) : null}
+                  </AnimatePresence>
 
-                        <div className="md:col-span-2">
-                          <MainDate
-                            label="visit date"
-                            placeholder="visit date"
-                            {...register("visit_date")}
-                            error={errors.visit_date?.message}
-                          />
-                        </div>
+                  <input
+                    type="hidden"
+                    {...register("rating", { valueAsNumber: true })}
+                  />
+                </fieldset>
 
-                        <div className="md:col-span-2">
-                          <MainTextArea
-                            placeholder="comment"
-                            label="comment"
-                            rows={6}
-                            {...register("content")}
-                            error={errors.content?.message}
-                          />
-                        </div>
+                {/* Fields / Hint */}
+                <AnimatePresence mode="popLayout">
+                  {showFields ? (
+                    <m.div
+                      key="fields"
+                      initial={reduceMotion ? false : { opacity: 0 }}
+                      animate={reduceMotion ? undefined : { opacity: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0 }}
+                      transition={
+                        reduceMotion
+                          ? undefined
+                          : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
+                      }
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      <div className="md:col-span-1">
+                        <MainInput
+                          required
+                          placeholder="full name"
+                          label="full name"
+                          enableAutocomplete
+                          storageKey="review_full_name"
+                          {...register("user_name")}
+                          error={errors.user_name?.message}
+                        />
+                      </div>
 
-                        {/* Actions */}
-                        <div className="md:col-span-2 pt-1 flex flex-col sm:flex-row gap-3">
-                          <MainBtn
-                            type="submit"
-                            className="w-full flex justify-center"
-                            text="send"
-                            isPending={isPending}
-                          />
+                      <div className="md:col-span-1">
+                        <MainInput
+                          placeholder="job title"
+                          label="job title"
+                          enableAutocomplete
+                          storageKey="review_job_title"
+                          {...register("title")}
+                          error={errors.title?.message}
+                        />
+                      </div>
 
-                          {/* ✅ Reset */}
-                          <button
-                            type="button"
-                            onClick={onReset}
-                            disabled={isPending}
-                            className="
+                      <div className="md:col-span-2">
+                        <MainDate
+                          label="visit date"
+                          placeholder="visit date"
+                          {...register("visit_date")}
+                          error={errors.visit_date?.message}
+                        />
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <MainTextArea
+                          placeholder="comment"
+                          label="comment"
+                          rows={6}
+                          {...register("content")}
+                          error={errors.content?.message}
+                        />
+                      </div>
+
+                      {/* Actions */}
+                      <div className="md:col-span-2 pt-1 flex flex-col sm:flex-row gap-3">
+                        <MainBtn
+                          type="submit"
+                          className="w-full flex justify-center"
+                          text="send"
+                          isPending={isPending}
+                        />
+
+                        {/* ✅ Reset */}
+                        <button
+                          type="button"
+                          onClick={onReset}
+                          disabled={isPending}
+                          className="
                               w-full
                               inline-flex items-center justify-center
                               rounded-2xl
@@ -240,40 +238,18 @@ const Review = () => {
                               focus-visible:ring-offset-2
                               disabled:opacity-60 disabled:cursor-not-allowed
                             "
-                          >
-                            {t("Reset")}
-                          </button>
-                        </div>
-                      </m.div>
-                    ) : (
-                      <m.div
-                        key="hint"
-                        initial={reduceMotion ? false : { opacity: 0 }}
-                        animate={reduceMotion ? undefined : { opacity: 1 }}
-                        exit={reduceMotion ? undefined : { opacity: 0 }}
-                        transition={
-                          reduceMotion
-                            ? undefined
-                            : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
-                        }
-                        className="
-                          rounded-2xl
-                          bg-[var(--bg-surface)]
-                          border border-[color:var(--field-border)]
-                          p-4
-                        "
-                      >
-                        <p className="text-sm text-[var(--text-soft)] leading-relaxed">
-                          {t("Select a rating first to continue")}
-                        </p>
-                      </m.div>
-                    )}
-                  </AnimatePresence>
-                </form>
-              </section>
+                        >
+                          {t("Reset")}
+                        </button>
+                      </div>
+                    </m.div>
+                  ) : null}
+                </AnimatePresence>
+              </form>
+            </section>
 
-              {/* Side Visual */}
-              {hasIntro ? (
+            {/* Side Visual */}
+            {/* {hasIntro ? (
                 <aside className="lg:col-span-5">
                   <div className="relative h-full">
                     <div
@@ -324,8 +300,7 @@ const Review = () => {
                     </div>
                   </div>
                 </aside>
-              ) : null}
-            </div>
+              ) : null} */}
           </FetchHandler>
         </div>
       </main>

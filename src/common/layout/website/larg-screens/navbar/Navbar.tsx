@@ -72,7 +72,6 @@ const Navbar: React.FC<NavbarProps> = ({ logo = "" }) => {
             <BookConsultationButton />
             <Search />
             <LanguageDropdown />
-            {/* <ThemeDropdown /> */}
           </div>
         </div>
       </div>

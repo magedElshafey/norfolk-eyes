@@ -1,4 +1,3 @@
-// src/seo/seo.config.ts
 export const seoConfig = {
   siteName: "Norfolk Eyes",
   defaultTitle: "Specialist Eye Clinic in Norfolk",
@@ -8,7 +7,6 @@ export const seoConfig = {
   defaultOgImage: "https://norfolkeyes.com/static/og-default.jpg",
   twitterHandle: "@NorfolkEyes",
 
-  // favicons
   favicon: "/favicon.ico",
   appleTouchIcon: "/apple-touch-icon.png",
   manifestUrl: "/site.webmanifest",

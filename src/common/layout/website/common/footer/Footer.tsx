@@ -99,7 +99,6 @@ const CardLink = ({
 
 export default function Footer(props: FooterProps) {
   const { t } = useTranslation();
-
   const POLICY_LINKS: { label: string; href: string }[] = [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Cookies Policy", href: "/cookies" },
@@ -553,7 +552,14 @@ export default function Footer(props: FooterProps) {
             "
           >
             <div className="text-xs md:text-sm text-[var(--footer-muted)] text-center md:text-left">
-              {props.copyright_text || t("© All rights reserved")}
+              <a
+                className=" mx-1 underline font-semibold"
+                href="http://medwisely.com/"
+                target="_blank"
+              >
+                MedWisely
+              </a>
+              {t("© All rights reserved")}
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-2">

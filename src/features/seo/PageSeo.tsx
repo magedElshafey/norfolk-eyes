@@ -30,6 +30,7 @@ export interface PageSeoProps {
   structuredData?: Record<string, any> | Record<string, any>[];
   /** hreflang alternates للصفحات متعددة اللغات */
   langAlternates?: LangAlternate[];
+  fav: string;
 }
 
 const PageSeo: React.FC<PageSeoProps> = ({
@@ -42,6 +43,7 @@ const PageSeo: React.FC<PageSeoProps> = ({
   publishedTime,
   structuredData,
   langAlternates,
+  fav,
 }) => {
   const { i18n } = useTranslation();
   const lang = i18n.language || "en";
@@ -54,7 +56,7 @@ const PageSeo: React.FC<PageSeoProps> = ({
     siteUrl,
     defaultOgImage,
     twitterHandle,
-    // favicons & PWA-ish config
+
     favicon,
     appleTouchIcon,
     manifestUrl,
@@ -65,8 +67,8 @@ const PageSeo: React.FC<PageSeoProps> = ({
   const fullTitle = useMemo(() => {
     const base = title || defaultTitle;
     // لو عايز صفحة الهوم تبقى من غير "| siteName" ممكن تحط condition هنا
-    return `${base} | ${siteName}`;
-  }, [title, siteName, defaultTitle]);
+    return `${base}`;
+  }, [title, defaultTitle]);
 
   const metaDescription = description || defaultDescription;
 
@@ -99,7 +101,8 @@ const PageSeo: React.FC<PageSeoProps> = ({
       <meta name="viewport" content="width=device-width, initial-scale=1" />
 
       {/* Favicon / icons */}
-      {favicon && <link rel="icon" href={favicon} />}
+      <link rel="icon" type="image/svg+xml" href={fav ? fav : favicon} />
+
       {appleTouchIcon && (
         <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon} />
       )}

@@ -36,7 +36,7 @@ const HomeHero: FC = () => {
     : { duration: 0.5, ease: EASE_OUT };
 
   const heroImg = queryRueslt?.data?.section?.image;
-
+  console.log("q home", queryRueslt?.data);
   return (
     <LazyMotion features={domAnimation}>
       <m.section

@@ -1,4 +1,3 @@
-// src/common/components/logo/Logo.tsx
 import { Link } from "react-router-dom";
 
 interface LogoProps {
@@ -10,21 +9,28 @@ const Logo: React.FC<LogoProps> = ({
   color = "text-primaryDarkGreen",
   logo = "",
 }) => {
-  // const src = "/images/logo.png";
-
   return (
-    <Link to="/" className="shrink-0" aria-label="Go to homepage">
+    <Link
+      to="/"
+      aria-label="Go to homepage"
+      className="flex items-center h-full"
+    >
       {logo ? (
         <img
-          alt={`norfolk eyes logo`}
           src={logo}
+          alt="Norfolk Eyes logo"
           loading="eager"
-          width={80}
-          height={80}
-          className="max-h-[150px] w-auto object-contain"
+          className="
+    h-7          /* 📱 موبايل (28px) */
+    sm:h-8       /* 📱 موبايل كبير */
+    lg:h-10      /* 💻 ديسكتوب */
+    w-auto
+    object-contain
+    select-none
+  "
         />
       ) : (
-        <h1 className={` ${color}`}>Norfolk Eyes</h1>
+        <h1 className={`text-lg font-semibold ${color}`}>Norfolk Eyes</h1>
       )}
     </Link>
   );
