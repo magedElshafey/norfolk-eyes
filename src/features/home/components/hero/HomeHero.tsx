@@ -35,7 +35,7 @@ const HomeHero: FC = () => {
     ? { duration: 0 }
     : { duration: 0.5, ease: EASE_OUT };
 
-  const heroImg = queryRueslt?.data?.section?.image || "/images/home-hero.webp";
+  const heroImg = queryRueslt?.data?.section?.image;
 
   return (
     <LazyMotion features={domAnimation}>
@@ -53,7 +53,7 @@ const HomeHero: FC = () => {
           <FetchHandler queryResult={queryRueslt} skeletonType="hero">
             <div className="grid gap-10 lg:gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] items-center">
               {/* Doctor image side */}
-              <HeroImage image={heroImg} />
+              {heroImg && <HeroImage image={heroImg} />}
 
               {/* Text side */}
               <div className="space-y-4 md:space-y-6">
@@ -82,7 +82,7 @@ const HomeHero: FC = () => {
                   </MainBtn>
 
                   <MainBtn hasIcon={false} theme="outline">
-                    <Link to="/about">{t("about us")}</Link>
+                    <Link to="/about">{t("Navbar.About")}</Link>
                   </MainBtn>
                 </div>
 

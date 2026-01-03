@@ -1,5 +1,6 @@
-import React from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { Star } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
 type Props = {
   value: number; // 0..5
@@ -7,6 +8,8 @@ type Props = {
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
   className?: string;
+  ariaLabel?: string;
+  dir?: "ltr" | "rtl"; // ✅ direction to control stagger order
 };
 
 const sizeMap = {
@@ -15,34 +18,109 @@ const sizeMap = {
   lg: { box: "h-14 w-14", icon: 22 },
 };
 
+function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
+}
+
 const StarRating: React.FC<Props> = ({
   value,
   onChange,
   disabled,
   size = "md",
   className,
+  ariaLabel = "rating",
+  dir = "ltr",
 }) => {
-  const [hover, setHover] = React.useState<number>(0);
+  const reduceMotion = useReducedMotion();
+  const [hover, setHover] = useState<number>(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // trigger the stagger once
+    setMounted(true);
+  }, []);
+
   const { box, icon } = sizeMap[size];
   const active = hover || value;
+
+  const order = useMemo(() => {
+    // controls fade order:
+    // ltr => 1..5
+    // rtl => 5..1
+    return dir === "rtl" ? [5, 4, 3, 2, 1] : [1, 2, 3, 4, 5];
+  }, [dir]);
+
+  const indexMap = useMemo(() => {
+    // star value -> index in order (for delay)
+    const m = new Map<number, number>();
+    order.forEach((v, idx) => m.set(v, idx));
+    return m;
+  }, [order]);
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (disabled) return;
+
+    const key = e.key;
+    if (
+      ![
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+        "Enter",
+        " ",
+      ].includes(key)
+    )
+      return;
+
+    e.preventDefault();
+
+    if (key === "Enter" || key === " ") {
+      if (hover) onChange(hover);
+      return;
+    }
+
+    let next = value || 1;
+
+    // ArrowLeft means “previous visually”
+    // In RTL, previous visually is +1 (because right-to-left)
+    const isPrev = key === "ArrowLeft" || key === "ArrowDown";
+    const isNext = key === "ArrowRight" || key === "ArrowUp";
+
+    if (isPrev) next = clamp((value || 1) + (dir === "rtl" ? 1 : -1), 1, 5);
+    if (isNext) next = clamp((value || 0) + (dir === "rtl" ? -1 : 1), 1, 5);
+
+    if (key === "Home") next = dir === "rtl" ? 5 : 1;
+    if (key === "End") next = dir === "rtl" ? 1 : 5;
+
+    onChange(next);
+  };
 
   return (
     <div
       role="radiogroup"
-      aria-label="rating"
+      aria-label={ariaLabel}
+      aria-disabled={disabled ? true : undefined}
       className={`flex items-center gap-2 ${className ?? ""}`}
       onMouseLeave={() => setHover(0)}
+      onKeyDown={onKeyDown}
     >
       {Array.from({ length: 5 }).map((_, i) => {
         const v = i + 1;
         const isOn = v <= active;
 
+        const delayIndex = indexMap.get(v) ?? i;
+        const delay = reduceMotion || !mounted ? 0 : delayIndex * 0.05; // ✅ tiny stagger
+
         return (
-          <button
+          <motion.button
             key={v}
             type="button"
             role="radio"
             aria-checked={value === v}
+            aria-label={`${v} / 5`}
             disabled={disabled}
             onMouseEnter={() => setHover(v)}
             onFocus={() => setHover(v)}
@@ -50,10 +128,13 @@ const StarRating: React.FC<Props> = ({
             onClick={() => onChange(v)}
             className={`
               ${box}
-              rounded-md
+              rounded-xl
               border
-              transition
+              transition-[transform,opacity,box-shadow]
+              duration-150
               flex items-center justify-center
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--field-focus-border)]
+              focus-visible:ring-offset-2
               ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
               ${
                 isOn
@@ -63,9 +144,18 @@ const StarRating: React.FC<Props> = ({
             `}
             style={{
               background: isOn
-                ? "var(--field-focus-border)" // نفس لون الفوكس/الأكسنت في مشروعك
+                ? "var(--field-focus-border)"
                 : "var(--bg-surface)",
+              willChange: "opacity", // ✅ helps avoid jank
             }}
+            // ✅ Fade only (no y movement)
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={reduceMotion ? undefined : { opacity: 1 }}
+            transition={
+              reduceMotion
+                ? undefined
+                : { duration: 0.18, delay, ease: [0.16, 1, 0.3, 1] }
+            }
             title={`${v} / 5`}
           >
             <Star
@@ -76,11 +166,11 @@ const StarRating: React.FC<Props> = ({
                 color: isOn ? "#fff" : "var(--text-soft)",
               }}
             />
-          </button>
+          </motion.button>
         );
       })}
     </div>
   );
 };
 
-export default StarRating;
+export default memo(StarRating);

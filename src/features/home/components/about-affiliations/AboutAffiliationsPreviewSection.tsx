@@ -31,7 +31,7 @@ const AboutAffiliationsPreviewSection: FC = () => {
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.5, ease: EASE_OUT };
-
+  console.log("queryResult from affliation", queryResult?.data);
   return (
     <LazyMotion features={domAnimation}>
       <m.div
@@ -52,6 +52,8 @@ const AboutAffiliationsPreviewSection: FC = () => {
               <FetchHandler queryResult={queryResult} skeletonType="about-home">
                 <AffiliationSlider
                   items={queryResult?.data?.affiliations || []}
+                  heading={queryResult?.data?.section?.heading}
+                  description={queryResult?.data?.section?.description}
                 />
               </FetchHandler>
             </div>

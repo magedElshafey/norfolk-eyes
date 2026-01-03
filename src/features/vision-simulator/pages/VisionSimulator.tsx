@@ -99,10 +99,9 @@ const VisionSimulator: React.FC = () => {
             {/* Controls */}
             <div className="space-y-4">
               <OptionSelector
-                ariaLabel={t("Vision.scene.aria", "Scene selection")}
-                title={t("Vision.scene.title", "Choose a scene")}
+                ariaLabel={t("Scene selection")}
+                title={t("Choose a scene")}
                 helper={t(
-                  "Vision.scene.helper",
                   "Select a real-world situation to see how each lens performs."
                 )}
                 options={scenes}
@@ -111,12 +110,9 @@ const VisionSimulator: React.FC = () => {
               />
 
               <OptionSelector
-                ariaLabel={t("Vision.condition.aria", "Condition selection")}
-                title={t("Vision.condition.title", "Your condition")}
-                helper={t(
-                  "Vision.condition.helper",
-                  "Choose the eye condition you want to simulate."
-                )}
+                ariaLabel={t("Condition selection")}
+                title={t("Your condition")}
+                helper={t("Choose the eye condition you want to simulate.")}
                 options={conditions}
                 selectedId={conditionId}
                 onChange={setConditionId}

@@ -364,39 +364,44 @@ const WorkGallery: React.FC = () => {
                     onBlurCapture={handleBlurCapture}
                     className="keen-slider outline-none !overflow-visible items-stretch"
                   >
-                    {query?.data?.section?.image_gallery.map((g, idx) => (
-                      <div
-                        key={`${idx}-${g?.image ?? "img"}`}
-                        className="keen-slider__slide h-full"
-                        role="group"
-                        aria-roledescription="slide"
-                        aria-label={t(
-                          "Clinic.slideLabel",
-                          "Slide {{x}} of {{y}}",
-                          {
-                            x: idx + 1,
-                            y: total,
-                          }
-                        )}
-                      >
-                        <Card className="overflow-hidden h-full">
-                          <div className="aspect-[4/3]">
-                            <img
-                              src={g.image || ""}
-                              alt={g.title}
-                              className="h-full w-full object-cover"
-                              loading="lazy"
-                              decoding="async"
-                            />
-                          </div>
-                          <div className="p-4">
-                            <p className="text-sm font-semibold text-[var(--accent)]">
-                              {g.title}
-                            </p>
-                          </div>
-                        </Card>
-                      </div>
-                    ))}
+                    {query?.data?.section?.image_gallery &&
+                      query?.data?.section?.image_gallery?.length > 0 &&
+                      query?.data?.section?.image_gallery.map((g, idx) => (
+                        <div
+                          key={`${idx}-${g?.image ?? "img"}`}
+                          className="keen-slider__slide h-full"
+                          role="group"
+                          aria-roledescription="slide"
+                          aria-label={t(
+                            "Clinic.slideLabel",
+                            "Slide {{x}} of {{y}}",
+                            {
+                              x: idx + 1,
+                              y: total,
+                            }
+                          )}
+                        >
+                          <Card className="overflow-hidden h-full">
+                            <div className="aspect-[4/3]">
+                              <img
+                                src={g.image || ""}
+                                alt={g.title}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            </div>
+                            <div className="p-4">
+                              <p className="text-sm font-semibold mb-2 text-[var(--accent)]">
+                                {g.title}
+                              </p>
+                              <p className="text-xs text-[var(--text-muted)]">
+                                {g.description}
+                              </p>
+                            </div>
+                          </Card>
+                        </div>
+                      ))}
                   </div>
                 </m.div>
               </div>

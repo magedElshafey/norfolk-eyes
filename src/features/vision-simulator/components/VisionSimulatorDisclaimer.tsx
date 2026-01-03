@@ -6,7 +6,7 @@ import SectionTitle from "@/common/components/sections/SectionTitle";
 import SectionDescription from "@/common/components/sections/SectionDescription";
 import SectionDetails from "@/common/components/sections/SectionDetails";
 import SectionEnding from "@/common/components/sections/SectionEnding";
-import { IoIosWarning } from "react-icons/io";
+import { IoWarningOutline } from "react-icons/io5";
 
 type Props = { className?: string };
 
@@ -28,10 +28,7 @@ const VisionSimulatorDisclaimer: React.FC<Props> = ({ className = "" }) => {
             ].join(" ")}
           >
             <div className="space-y-3">
-              <IoIosWarning
-                size={50}
-                className="text-[var(--field-error-text)]"
-              />
+              <IoWarningOutline size={20} className="text-[var(--accent)]" />
               {query?.data?.section?.heading && (
                 <SectionTitle text={query?.data?.section?.heading} as="h3" />
               )}

@@ -71,7 +71,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ parent, onClose }) => {
             transition-colors !capitalize
           "
         >
-          {t("View All")}
+          {t("View all")}
           {/* {t("Global.View")}{" "}
           {t(`Navbar.${String(parentLabel).toLowerCase?.()}`) ??
             t(`Navbar.${parentLabel}`)} */}

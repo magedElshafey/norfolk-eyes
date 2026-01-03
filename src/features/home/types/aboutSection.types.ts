@@ -14,7 +14,7 @@ export interface AboutSectionType {
 export interface Affiliation {
   id: number;
   logo: string | null;
-  website_url: string;
+  website: string;
   role: string;
   description: string;
   organization_name: string;

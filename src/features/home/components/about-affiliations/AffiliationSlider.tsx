@@ -65,7 +65,7 @@ function useKeenAutoplay(params: {
   enabled: boolean;
   interval?: number;
 }) {
-  const { slider, enabled, interval = 900 } = params;
+  const { slider, enabled, interval = 850 } = params;
 
   const timerRef = useRef<number | null>(null);
   const pausedRef = useRef(false);
@@ -195,13 +195,12 @@ const AffiliationSlider: React.FC<Props> = ({
     "Affiliations carousel"
   );
 
-  /* ---------------------------- Motion (safe) ---------------------------- */
-
   const initial = shouldReduceMotion
     ? { opacity: 1, y: 0 }
     : { opacity: 0, y: 16 };
-  const animate =
-    shouldReduceMotion || inViewport ? { opacity: 1, y: 0 } : initial;
+
+  const animate = { opacity: 1, y: 0 };
+
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.45, ease: EASE_OUT };
@@ -267,27 +266,47 @@ const AffiliationSlider: React.FC<Props> = ({
 };
 
 function AffLogo({ item }: { item: Affiliation }) {
-  const Wrapper = item.website_url ? "a" : "div";
-  const wrapperProps = item.website_url
-    ? { href: item.website_url, target: "_blank", rel: "noreferrer noopener" }
+  const shouldReduceMotion = useReducedMotion();
+  const isLink = Boolean(item.website);
+
+  const Wrapper = isLink ? "a" : "div";
+  const wrapperProps = isLink
+    ? { href: item.website, target: "_blank", rel: "noreferrer noopener" }
     : {};
 
   return (
     <Wrapper
       {...(wrapperProps as any)}
       className="
-        group w-full h-[54px] md:h-[60px]
-  inline-flex items-center justify-center
-  rounded-2xl
-  bg-[var(--card-bg,#FFFFFF)]
-  border border-[var(--card-border,#E5E7EB)]
- duration-200
-  transition
-  hover:shadow-xl 
- 
+        group relative w-full h-[54px] md:h-[60px]
+        inline-flex items-center justify-center
+        rounded-2xl
+        bg-[var(--card-bg,#FFFFFF)]
+        border border-[var(--card-border,#E5E7EB)]
+        transition-colors duration-200
+        outline-none
+
+        /* ✅ no translate/scale on the card => no clipping */
+        hover:border-[color:var(--accent,#0f766e)]
+        hover:bg-[color:var(--accent-soft-bg,rgba(15,118,110,0.06))]
+
+        focus-visible:ring-2
+        focus-visible:ring-[color:var(--focus-ring,#0f766e)]
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-[color:var(--page-bg,#F9FAFB)]
+
+        /* sheen layer (opacity only => cheap) */
+        before:content-['']
+        before:absolute before:inset-0
+        before:rounded-2xl
+        before:pointer-events-none
+        before:opacity-0
+        before:transition-opacity before:duration-200
+        before:bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.55)_35%,transparent_70%)]
+        hover:before:opacity-[0.22]
       "
     >
-      <img
+      <m.img
         src={item.logo || "/images/rc.png"}
         alt={item.organization_name || ""}
         loading="lazy"
@@ -298,7 +317,15 @@ function AffLogo({ item }: { item: Affiliation }) {
           filter grayscale contrast-125
           transition
           group-hover:grayscale-0 group-hover:contrast-100
+          will-change-transform
         "
+        /* ✅ animate only the logo (inside), so no border clipping */
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 260, damping: 24 }
+        }
+        whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }}
       />
     </Wrapper>
   );

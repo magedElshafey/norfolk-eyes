@@ -6,6 +6,14 @@ import handlePromisError from "@/utils/handlePromiseError";
 import useSubmitReview from "../api/useSubmitReview";
 import { reviewSchema, ReviewSchemaType } from "../schema/reviewSchema";
 
+const defaultValues: ReviewSchemaType = {
+  rating: 0,
+  user_name: "",
+  title: "",
+  visit_date: "",
+  content: "",
+};
+
 const useReviewLogic = () => {
   const { mutateAsync, isPending } = useSubmitReview();
 
@@ -20,13 +28,7 @@ const useReviewLogic = () => {
     resolver: zodResolver(reviewSchema),
     mode: "onSubmit",
     reValidateMode: "onBlur",
-    defaultValues: {
-      rating: 0,
-      user_name: "",
-      title: "",
-      visit_date: "",
-      content: "",
-    },
+    defaultValues,
   });
 
   const rating = watch("rating");
@@ -34,6 +36,10 @@ const useReviewLogic = () => {
 
   const onSelectRating = (v: number) => {
     setValue("rating", v, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const onReset = () => {
+    reset(defaultValues);
   };
 
   const onSubmit = async (values: ReviewSchemaType) => {
@@ -48,7 +54,7 @@ const useReviewLogic = () => {
 
       if (res?.status) {
         toast.success(res?.message || "Review submitted successfully");
-        reset();
+        reset(defaultValues);
         return;
       }
 
@@ -67,6 +73,7 @@ const useReviewLogic = () => {
     rating: Number(rating) || 0,
     showFields,
     onSelectRating,
+    onReset,
   };
 };
 
