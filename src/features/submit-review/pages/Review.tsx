@@ -1,11 +1,5 @@
 import { memo, useMemo } from "react";
-import {
-  LazyMotion,
-  domAnimation,
-  m,
-  AnimatePresence,
-  useReducedMotion,
-} from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 import MainInput from "@/common/components/inputs/MainInput";
@@ -20,6 +14,7 @@ import FetchHandler from "@/common/api/fetchHandler/FetchHandler";
 import StarRating from "../components/StarRating";
 import useReviewLogic from "../logic/useReviewLogic";
 import useGetReviewIntro from "../api/useGetReviewIntro";
+import { useReviewPlaceholder } from "../hooks/useReviewPlaceholder";
 
 function isTranslationKey(s?: string) {
   return Boolean(s && s.includes("."));
@@ -45,7 +40,6 @@ const FieldError = memo(function FieldError({ message }: { message?: string }) {
 const Review = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.dir() === "rtl";
-  const reduceMotion = useReducedMotion();
 
   const {
     register,
@@ -57,6 +51,7 @@ const Review = () => {
     showFields,
     onSelectRating,
     onReset,
+    resetKey,
   } = useReviewLogic();
 
   const introQuery = useGetReviewIntro();
@@ -76,6 +71,7 @@ const Review = () => {
     const accent = "4px solid var(--field-focus-border)";
     return isRTL ? { borderInlineEnd: accent } : { borderInlineStart: accent };
   }, [isRTL]);
+  const placeholder = useReviewPlaceholder(rating);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -127,10 +123,9 @@ const Review = () => {
                     <StarRating
                       value={rating}
                       onChange={onSelectRating}
+                      onResetSignal={resetKey}
                       disabled={isPending}
-                      size="md"
-                      ariaLabel={t("rate")}
-                      dir={isRTL ? "rtl" : "ltr"} // ✅ direction-aware stagger
+                      dir={isRTL ? "rtl" : "ltr"}
                     />
 
                     {/* <span className="text-xs text-[var(--text-soft)]">
@@ -157,16 +152,21 @@ const Review = () => {
                   {showFields ? (
                     <m.div
                       key="fields"
-                      initial={reduceMotion ? false : { opacity: 0 }}
-                      animate={reduceMotion ? undefined : { opacity: 1 }}
-                      exit={reduceMotion ? undefined : { opacity: 0 }}
-                      transition={
-                        reduceMotion
-                          ? undefined
-                          : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
-                      }
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
                       className="grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
+                      <div className="md:col-span-2">
+                        <MainTextArea
+                          placeholder={placeholder}
+                          label="Tell us more about your experience"
+                          rows={6}
+                          {...register("content")}
+                          error={errors.content?.message}
+                        />
+                      </div>
                       <div className="md:col-span-1">
                         <MainInput
                           required
@@ -190,22 +190,12 @@ const Review = () => {
                         />
                       </div>
 
-                      <div className="md:col-span-2">
+                      <div>
                         <MainDate
                           label="visit date"
                           placeholder="visit date"
                           {...register("visit_date")}
                           error={errors.visit_date?.message}
-                        />
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <MainTextArea
-                          placeholder="comment"
-                          label="comment"
-                          rows={6}
-                          {...register("content")}
-                          error={errors.content?.message}
                         />
                       </div>
 

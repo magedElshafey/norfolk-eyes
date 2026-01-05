@@ -1,105 +1,76 @@
+// WebsiteLayout.tsx
 import { Outlet } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import useGetWebsiteSettings from "@/features/settings/api/useGetWebsiteSettings";
+
 import ScrollToTopButton from "./common/scroll-to-top/ScrollToTopButton";
 import MobileNavbar from "./small-screens/mobile-navbar/MobileNavbar";
 import MobileWidget from "./small-screens/mobile-widget/MobileWidget";
 import StickyNavbar from "./larg-screens/sticky-navbar/StickyNavbar";
-import NavbarSkeleton from "@/common/components/loader/skeltons/NavbarSkeleton";
 import Header from "./larg-screens/header/Header";
-import AccessibilityWidget from "@/common/components/accessibility-widget/AccessibilityWidget";
-import Footer from "./common/footer/Footer";
-import FooterSkeleton from "@/common/components/loader/skeltons/FooterSkeleton";
 import PageSeo from "@/features/seo/PageSeo";
 import CookieBanner from "@/features/cookies/CookieBanner";
 
+const Footer = lazy(() => import("./common/footer/Footer"));
+const AccessibilityWidget = lazy(
+  () => import("@/common/components/accessibility-widget/AccessibilityWidget")
+);
+
 const WebsiteLayout = () => {
-  const { data, isLoading } = useGetWebsiteSettings();
-  const logo = data?.app_logo;
-  const fav = data?.app_favicon;
-  const clinicSchema = data && {
-    "@context": "https://schema.org",
-    "@type": "MedicalClinic",
-    "@id": `${data.app_url}#organization`,
-    name: data.app_name,
-    url: data.app_url,
-    medicalSpecialty: "Ophthalmology",
-    logo: {
-      "@type": "ImageObject",
-      url: data.app_logo,
-    },
-    telephone: data.contact_phone,
-    address: data.contact_address && {
-      "@type": "PostalAddress",
-      // لو عندك تفاصيل أكتر حطها
-      // streetAddress: data.contact_address.street,
-      // addressLocality: data.contact_address.city,
-      addressCountry: "UK", // أو UK أو حسب الـ project
-    },
-    fav,
-    sameAs: [
-      data.social_facebook,
-      data.social_instagram,
-      data.social_linkedin,
-      data.social_youtube,
-      data.social_twitter,
-    ].filter(Boolean),
-  };
-  console.log("settings ", data);
+  const { data } = useGetWebsiteSettings();
+
+  const clinicSchema = data?.app_url
+    ? {
+        "@context": "https://schema.org",
+        "@type": "MedicalClinic",
+        "@id": `${data.app_url}#organization`,
+        name: data.app_name,
+        url: data.app_url,
+        logo: data.app_logo,
+        telephone: data.contact_phone,
+        sameAs: [
+          data.social_facebook,
+          data.social_instagram,
+          data.social_linkedin,
+          data.social_youtube,
+          data.social_twitter,
+        ].filter(Boolean),
+      }
+    : undefined;
+  console.log("data from settings", data);
   return (
     <div id="app-shell" className="flex min-h-screen flex-col">
-      {/* 👇 نحط الـ PageSeo هنا عشان الـ org schema + الdefaults */}
-      {!isLoading && clinicSchema && (
-        <PageSeo structuredData={clinicSchema} fav={fav || ""} />
-      )}
+      <PageSeo structuredData={clinicSchema} fav={data?.app_favicon || ""} />
 
-      {isLoading ? (
-        <NavbarSkeleton />
-      ) : (
-        <>
-          {/* common tools*/}
-          <ScrollToTopButton />
-          <AccessibilityWidget />
+      {/* Global tools */}
+      <ScrollToTopButton />
 
-          {/* mobile layout */}
-          <div className="lg:hidden">
-            <MobileNavbar logo={logo || ""} />
-            <MobileWidget />
-          </div>
+      <Suspense fallback={null}>
+        <AccessibilityWidget />
+      </Suspense>
 
-          {/* website layout */}
-          <header className="hidden md:block">
-            <Header />
-            <StickyNavbar logo={logo || ""} />
-          </header>
-        </>
-      )}
+      {/* Mobile */}
+      <div className="lg:hidden">
+        <MobileNavbar logo={data?.app_logo || ""} />
+        <MobileWidget />
+      </div>
 
-      {/* breadcrumb + outlet */}
+      {/* Desktop */}
+      <header className="hidden lg:block">
+        <Header />
+        <StickyNavbar logo={data?.app_logo || ""} />
+      </header>
+
+      {/* Content */}
       <main className="grow flex flex-col">
-        <div>
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
 
-      {isLoading ? (
-        <FooterSkeleton />
-      ) : (
-        <Footer
-          app_logo={logo || ""}
-          contact_address={data?.contact_address || ""}
-          contact_email={data?.contact_email || ""}
-          contact_phone={data?.contact_phone || ""}
-          app_description={data?.app_description || ""}
-          social_facebook={data?.social_facebook || ""}
-          social_instagram={data?.social_instagram || ""}
-          social_linkedin={data?.social_linkedin || ""}
-          social_twitter={data?.social_twitter || ""}
-          social_youtube={data?.social_youtube || ""}
-          copyright_text={data?.copyright_text || ""}
-          business_hours={data?.business_hours || ""}
-          google_map_url={data?.google_map_url || ""}
-        />
-      )}
+      {/* Footer */}
+      <Suspense fallback={<div className="h-40" />}>
+        {data && <Footer {...data} />}
+      </Suspense>
+
       <CookieBanner />
     </div>
   );

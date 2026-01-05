@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ const defaultValues: ReviewSchemaType = {
 
 const useReviewLogic = () => {
   const { mutateAsync, isPending } = useSubmitReview();
+  const [resetKey, setResetKey] = useState(0);
 
   const {
     register,
@@ -40,6 +41,7 @@ const useReviewLogic = () => {
 
   const onReset = () => {
     reset(defaultValues);
+    setResetKey((k) => k + 1);
   };
 
   const onSubmit = async (values: ReviewSchemaType) => {
@@ -54,7 +56,7 @@ const useReviewLogic = () => {
 
       if (res?.status) {
         toast.success(res?.message || "Review submitted successfully");
-        reset(defaultValues);
+        onReset();
         return;
       }
 
@@ -74,6 +76,7 @@ const useReviewLogic = () => {
     showFields,
     onSelectRating,
     onReset,
+    resetKey,
   };
 };
 

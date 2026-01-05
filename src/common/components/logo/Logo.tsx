@@ -5,10 +5,7 @@ interface LogoProps {
   logo?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({
-  color = "text-primaryDarkGreen",
-  logo = "",
-}) => {
+const Logo: React.FC<LogoProps> = ({ logo = "" }) => {
   return (
     <Link
       to="/"
@@ -30,7 +27,7 @@ const Logo: React.FC<LogoProps> = ({
   "
         />
       ) : (
-        <h1 className={`text-lg font-semibold ${color}`}>Norfolk Eyes</h1>
+        <div className="w-32 h-8 rounded bg-gray-200 animate-pulse" />
       )}
     </Link>
   );
