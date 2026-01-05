@@ -15,6 +15,7 @@ import {
   useReducedMotion,
   easeOut,
 } from "framer-motion";
+import ImageGalleryModal from "./ImageGalleryModal";
 
 interface Props {
   procedure: Procedure;
@@ -23,6 +24,8 @@ interface Props {
 const ProcedureMedia: React.FC<Props> = ({ procedure }) => {
   const shouldReduceMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const titleId = useId();
   const { t } = useTranslation();
 
@@ -47,6 +50,7 @@ const ProcedureMedia: React.FC<Props> = ({ procedure }) => {
     if (videoUrl) window.open(videoUrl, "_blank", "noopener,noreferrer");
   };
 
+  const images = procedure.assets?.images?.map((i) => i.url) ?? [];
   return (
     <LazyMotion features={domAnimation}>
       <section
@@ -221,25 +225,43 @@ const ProcedureMedia: React.FC<Props> = ({ procedure }) => {
           </>
         )}
 
-        {hasImages ? (
+        {hasImages && (
           <div className="grid gap-2 grid-cols-2">
-            {procedure.assets?.images?.map((img) => (
-              <figure
-                key={img?.url}
-                className="rounded-xl overflow-hidden bg-[var(--bg-subtle)] border border-[var(--border-subtle)]"
+            {images.map((url, index) => (
+              <button
+                key={url}
+                type="button"
+                onClick={() => {
+                  setActiveImage(index);
+                  setGalleryOpen(true);
+                }}
+                className="
+          relative rounded-xl overflow-hidden
+          bg-[var(--bg-subtle)]
+          border border-[var(--border-subtle)]
+          focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+        "
               >
                 <img
-                  src={img?.url}
+                  src={url}
                   alt={procedure.name}
                   className="w-full h-full max-h-40 object-cover"
                   loading="lazy"
                   decoding="async"
                 />
-              </figure>
+              </button>
             ))}
           </div>
-        ) : null}
+        )}
       </section>
+      <ImageGalleryModal
+        open={galleryOpen}
+        images={images}
+        activeIndex={activeImage}
+        onChange={setActiveImage}
+        onClose={() => setGalleryOpen(false)}
+        label={procedure.name}
+      />
     </LazyMotion>
   );
 };
