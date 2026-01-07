@@ -37,15 +37,17 @@ const WebsiteLayout = () => {
         ].filter(Boolean),
       }
     : undefined;
-  console.log("data from settings", data);
+  console.log("data from seo", data?.seo_title);
   return (
     <div id="app-shell" className="flex min-h-screen flex-col">
-      <PageSeo
-        structuredData={clinicSchema}
-        fav={data?.app_favicon || ""}
-        title={data?.seo_title}
-        description={data?.seo_description || ""}
-      />
+      {data && (
+        <PageSeo
+          structuredData={clinicSchema}
+          fav={data.app_favicon || ""}
+          title={data.seo_title || ""}
+          description={data.seo_description || ""}
+        />
+      )}
 
       {/* Global tools */}
       <ScrollToTopButton />

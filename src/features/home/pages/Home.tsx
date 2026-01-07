@@ -1,4 +1,4 @@
-import PageSeo from "@/features/seo/PageSeo";
+// import PageSeo from "@/features/seo/PageSeo";
 import AboutAffiliationsPreviewSection from "../components/about-affiliations/AboutAffiliationsPreviewSection";
 // import HomeContact from "../components/contact-details/HomeContact";
 import FaqSection from "../components/faq/FaqSection";
@@ -9,12 +9,12 @@ import PreparingForVisitSection from "../components/pre-visit/PreparingForVisitS
 import OurMainProceduresSection from "../components/producers/OurMainProceduresSection";
 // import TechnologySection from "../components/technology/TechnologySection";
 import WhyChooseUsSection from "../components/why-choose-us/WhyChooseUsSection";
-import useGetWebsiteSettings from "@/features/settings/api/useGetWebsiteSettings";
+// import useGetWebsiteSettings from "@/features/settings/api/useGetWebsiteSettings";
 const Home = () => {
-  const { isLoading, data } = useGetWebsiteSettings();
+  // const { isLoading, data } = useGetWebsiteSettings();
   return (
     <>
-      {!isLoading && data && (
+      {/* {!isLoading && data && (
         <PageSeo
           title={data?.app_name}
           description={data?.app_description}
@@ -33,7 +33,7 @@ const Home = () => {
             },
           }}
         />
-      )}
+      )} */}
       <HomeHero />
       <WhyChooseUsSection />
       <AboutAffiliationsPreviewSection />
