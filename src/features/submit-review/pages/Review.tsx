@@ -112,13 +112,6 @@ const Review = () => {
               >
                 {/* Rating */}
                 <fieldset className="space-y-2">
-                  {/* <legend className="text-sm md:text-base font-medium text-[var(--text)]">
-                    {t("rate")}
-                    <span className="ms-1 text-[var(--field-error-text)]">
-                      *
-                    </span>
-                  </legend> */}
-
                   <div className="flex items-center justify-center gap-3 flex-wrap">
                     <StarRating
                       value={rating}
@@ -127,12 +120,6 @@ const Review = () => {
                       disabled={isPending}
                       dir={isRTL ? "rtl" : "ltr"}
                     />
-
-                    {/* <span className="text-xs text-[var(--text-soft)]">
-                      {rating
-                        ? `${t("Selected")}: ${rating}/5`
-                        : t("Choose a rating")}
-                    </span> */}
                   </div>
 
                   <AnimatePresence>
