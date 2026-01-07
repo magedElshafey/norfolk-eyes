@@ -65,6 +65,7 @@ const PageSeo: React.FC<PageSeoProps> = ({
 
   const fullTitle = useMemo(() => {
     const base = title || defaultTitle;
+    // لو عايز صفحة الهوم تبقى من غير "| siteName" ممكن تحط condition هنا
     return `${base}`;
   }, [title, defaultTitle]);
 
