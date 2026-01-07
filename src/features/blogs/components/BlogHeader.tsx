@@ -29,31 +29,39 @@ const BlogHeader: React.FC<{ post: Articles }> = ({ post }) => {
             )}
           </div>
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
+            <div className="flex  gap-2">
               {post.author?.image && (
                 <MetaItem>
-                  <img alt={post?.author?.name} src={post?.author?.image} />
+                  <img
+                    alt={post?.author?.name}
+                    src={post?.author?.image}
+                    className="w-12 h-12 rounded-[50%] object-contain"
+                  />
                 </MetaItem>
               )}
-              {post.author?.name && (
-                <MetaItem>
-                  <span className="font-bold text-xl">
-                    {" "}
-                    {t("Blog.by", "By")}: {post.author.name}
-                  </span>
-                </MetaItem>
-              )}
+              <div className="flex flex-col items-cente gap-[2px] italic">
+                {post.author?.name && (
+                  <MetaItem>
+                    <span className="font-semibold text-sm">
+                      {t("Blog.by", "By")}: {post.author.name}
+                    </span>
+                  </MetaItem>
+                )}
+                <span className="text-xs text-[var(--text-muted)]">
+                  {post?.author?.affiliation}
+                </span>
+                {post.published_at && (
+                  <MetaItem>
+                    <time
+                      className="block"
+                      dateTime={formatDate(post.published_at)}
+                    >
+                      {formatDate(post.published_at)}
+                    </time>
+                  </MetaItem>
+                )}
+              </div>
             </div>
-            <span className="text-xs text-[var(--text-muted)]">
-              {post?.author?.affiliation}
-            </span>
-            {post.published_at && (
-              <MetaItem>
-                <time dateTime={formatDate(post.published_at)}>
-                  {formatDate(post.published_at)}
-                </time>
-              </MetaItem>
-            )}
           </div>
         </div>
       </div>

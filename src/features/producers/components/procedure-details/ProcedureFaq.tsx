@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { RxChevronDown } from "react-icons/rx";
 import { Procedure } from "../../types/ProcedureList.types";
+import HtmlConverter from "@/common/components/htmlConverter/HtmlConverter";
 
 interface Props {
   procedure: Procedure;
@@ -61,7 +62,7 @@ const ProcedureFaq: React.FC<Props> = ({ procedure }) => {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
               >
-                <span className="text-sm md:text-base font-medium text-[color:var(--text-soft)]">
+                <span className="text-sm md:text-base font-bold text-[color:var(--text-primary-green)]">
                   {faq.question}
                 </span>
                 <RxChevronDown
@@ -80,9 +81,9 @@ const ProcedureFaq: React.FC<Props> = ({ procedure }) => {
                   isOpen ? "max-h-40 md:max-h-60" : "max-h-0"
                 }`}
               >
-                <p className="text-xs md:text-sm text-[color:var(--text-muted)] pb-3 pe-3">
-                  {faq.answer}
-                </p>
+                <div className="!text-xs md:text-sm !text-[color:var(--text-muted)] pb-3 pe-3">
+                  <HtmlConverter html={faq?.answer} />
+                </div>
               </div>
             </div>
           );

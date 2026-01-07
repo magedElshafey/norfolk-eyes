@@ -1,5 +1,6 @@
 import React, { useId, useMemo, useCallback, useState } from "react";
 import { LazyMotion, domAnimation, m, useReducedMotion } from "framer-motion";
+import HtmlConverter from "@/common/components/htmlConverter/HtmlConverter";
 
 export type FaqItemProps = {
   answer: string;
@@ -115,9 +116,9 @@ const FaqItem: React.FC<FaqItemProps> = ({ answer, question, index }) => {
           style={{ willChange: "grid-template-rows, opacity" }}
         >
           <div className="overflow-hidden">
-            <p className="pt-1.5 pb-4 md:pb-5 text-xs md:text-sm text-[color:var(--text-muted)]">
-              {answer}
-            </p>
+            <div className="pt-1.5 pb-4 md:pb-5 text-xs md:text-sm text-[color:var(--text-muted)]">
+              <HtmlConverter html={answer} />
+            </div>
           </div>
         </m.div>
       </div>
