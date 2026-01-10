@@ -38,10 +38,10 @@ const Home = () => {
       <WhyChooseUsSection />
       <AboutAffiliationsPreviewSection />
       <OurMainProceduresSection />
+      <SuccessStoriesSlider />
       <PatientEducationSection />
       <PreparingForVisitSection />
       <FaqSection />
-      <SuccessStoriesSlider />
     </>
   );
 };

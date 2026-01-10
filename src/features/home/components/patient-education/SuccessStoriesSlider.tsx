@@ -100,12 +100,11 @@ const SuccessStoriesSlider: React.FC = () => {
   const queryResult = useGetSuccessStories();
 
   const reviews = useMemo(
-    () => queryResult?.data?.reviews ?? [],
-    [queryResult?.data?.reviews]
+    () => queryResult?.data?.success_stories ?? [],
+    [queryResult?.data?.success_stories]
   );
 
   const total = reviews.length;
-
   const [loaded, setLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(DEFAULT_PER_VIEW);
@@ -267,7 +266,9 @@ const SuccessStoriesSlider: React.FC = () => {
             }}
             aria-labelledby={`${sectionId}-heading`}
             aria-roledescription="carousel"
-            className="bg-[var(--bg-subtle)] border-b border-[var(--border-subtle)] py-10 md:py-14 lg:py-16"
+            className="bg-[var(--bg-surface)]
+              border-b border-[var(--border-subtle)]
+              py-10 md:py-14 lg:py-16"
             initial={sectionInitial}
             animate={sectionAnimate}
             transition={sectionTransition}

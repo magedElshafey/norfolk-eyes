@@ -51,10 +51,9 @@ const PreparingForVisitSection: FC = () => {
         {queryResult?.data?.is_active ? (
           <section
             aria-labelledby="preparing-visit-heading"
-            className="
-              bg-[var(--bg-subtle)]
-              border-t border-b border-[var(--border-subtle)]
-            "
+            className="bg-[var(--bg-surface)]
+              border-b border-[var(--border-subtle)]
+              py-10 md:py-14 lg:py-16"
           >
             <div className="containerr py-10 md:py-14 lg:py-16 space-y-8 md:space-y-10">
               <FetchHandler queryResult={queryResult} skeletonType="pre-visit">

@@ -54,8 +54,9 @@ const PatientEducationSection: FC = () => {
           <section
             aria-labelledby="patient-education-heading"
             className="
-              bg-[var(--bg-surface)]
+              bg-[var(--bg-subtle)]
               border-b border-[var(--border-subtle)]
+              py-10 md:py-14 lg:py-16
             "
           >
             <div className="containerr py-10 md:py-14 lg:py-16 space-y-8 md:space-y-10">

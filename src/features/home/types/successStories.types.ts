@@ -5,7 +5,7 @@ export interface Revs {
     description: string;
     ending: string;
   };
-  reviews: Reviews[];
+  success_stories: Reviews[];
   is_active: boolean
 }
 export interface Reviews {
