@@ -300,6 +300,7 @@ import { HiOutlineHashtag } from "react-icons/hi2";
 import { TbLetterSpacing, TbLineHeight } from "react-icons/tb";
 import { FiType } from "react-icons/fi";
 import { ImAccessibility } from "react-icons/im";
+import i18n from "@/lib/i18n/i18n";
 
 /* ======================= Types ======================= */
 
@@ -349,7 +350,7 @@ const progressFrom50 = (value: number, min: number, max: number) => {
 const AccessibilityWidget: React.FC = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [isRTL, setIsRTL] = useState(false);
+  // const [isRTL, setIsRTL] = useState(false);
 
   const [state, setState] = useState<A11yState>(() => {
     if (typeof window === "undefined") return DEFAULT_STATE;
@@ -361,12 +362,12 @@ const AccessibilityWidget: React.FC = () => {
     }
   });
 
-  useEffect(() => {
-    const dir =
-      document.documentElement.getAttribute("dir") ||
-      document.body.getAttribute("dir");
-    setIsRTL(dir === "rtl");
-  }, []);
+  // useEffect(() => {
+  //   const dir =
+  //     document.documentElement.getAttribute("dir") ||
+  //     document.body.getAttribute("dir");
+  //   setIsRTL(dir === "rtl");
+  // }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -413,8 +414,10 @@ const AccessibilityWidget: React.FC = () => {
     });
   };
 
-  const sideBtn = isRTL ? "left-3 sm:left-4" : "right-3 sm:right-4";
-  const sidePanel = isRTL ? "left-2 sm:left-10" : "right-2 sm:right-10";
+  const sideBtn =
+    i18n.language === "ar" ? "left-3 sm:left-4" : "right-3 sm:right-4";
+  const sidePanel =
+    i18n.language === "ar" ? "left-2 sm:left-10" : "right-2 sm:right-10";
   const resetAll = () => {
     setState(DEFAULT_STATE);
   };
