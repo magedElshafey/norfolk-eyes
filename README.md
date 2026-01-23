@@ -1,5 +1,7 @@
 # Norfolk Eyes – Healthcare Website Development
-
+🔗 Live Website: <a href = "https://norfolkeyes.com/" target = "_blank">
+https://norfolkeyes.com/
+</a>
 A modern healthcare website developed for an ophthalmology clinic specializing in cataract surgery and vision correction.  
 The project focuses on performance, accessibility, and interactive tools that help patients better understand their vision options before consultation.
 
@@ -79,15 +81,9 @@ An interactive tool that helps patients:
 
 ---
 
-## 📸 Screenshots
-
-> Screenshots of the homepage, interactive tools, and forms can be found in the project documentation or portfolio showcase.
-
----
-
 ## 👨‍💻 Author
 
-**Omar**  
+**Maged Elshafey**  
 Web Developer specialized in building accessible, high-performance web applications with real-world interactive tools.
 
 ---
