@@ -1,7 +1,16 @@
+<img src="cover.png" alt="Norfolk Eyes – Healthcare Website Development" width="100%" />
+
 # Norfolk Eyes – Healthcare Website Development
-🔗 Live Website: <a style = "display : block;" href = "https://norfolkeyes.com/" target = "_blank">
-https://norfolkeyes.com/
-</a>
+
+🔗 **Live Website:**  
+👉 https://norfolkeyes.com/
+
+![React](https://img.shields.io/badge/React.js-Frontend-blue)
+![Accessibility](https://img.shields.io/badge/Web-Accessibility-success)
+![Healthcare](https://img.shields.io/badge/Industry-Healthcare-green)
+
+---
+
 A modern healthcare website developed for an ophthalmology clinic specializing in cataract surgery and vision correction.  
 The project focuses on performance, accessibility, and interactive tools that help patients better understand their vision options before consultation.
 
@@ -26,6 +35,7 @@ This project was developed with a strong emphasis on:
 - **Tailwind CSS**
 - **React Hook Form**
 - **Modern JavaScript (ES6+)**
+- **Vite**
 
 ---
 
@@ -63,7 +73,7 @@ An interactive tool that helps patients:
 
 ---
 
-## 🧠 Architecture & Approach
+## 🧠 Architecture & Development Approach
 
 - Component-based architecture for reusability
 - Clear separation of concerns
